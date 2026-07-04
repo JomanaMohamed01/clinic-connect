@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { ensureAuthReady } from "@/lib/clinic-storage";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -125,6 +126,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    void ensureAuthReady();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

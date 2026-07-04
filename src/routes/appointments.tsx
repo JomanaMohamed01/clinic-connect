@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { CalendarPlus, Clock, Trash2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,9 +18,11 @@ import { AppHeader } from "@/components/AppHeader";
 import {
   type Appointment,
   cancelAppointment,
+  ensureAuthReady,
   getAppointments,
   getSession,
 } from "@/lib/clinic-storage";
+import { isReceptionStaff } from "@/lib/reception-api";
 
 export const Route = createFileRoute("/appointments")({
   head: () => ({
@@ -29,9 +31,15 @@ export const Route = createFileRoute("/appointments")({
       { name: "description", content: "View and manage your upcoming clinic visits." },
     ],
   }),
-  beforeLoad: () => {
-    if (typeof window !== "undefined" && !getSession()) {
-      throw redirect({ to: "/auth" });
+  beforeLoad: async () => {
+    if (typeof window !== "undefined") {
+      await ensureAuthReady();
+      if (!getSession()) {
+        throw redirect({ to: "/auth" });
+      }
+      if (await isReceptionStaff()) {
+        throw redirect({ to: "/reception" });
+      }
     }
   },
   component: AppointmentsPage,
@@ -40,21 +48,30 @@ export const Route = createFileRoute("/appointments")({
 function AppointmentsPage() {
   const navigate = useNavigate();
   const session = getSession();
-  const [items, setItems] = useState<Appointment[]>(() =>
-    session ? getAppointments(session.email) : [],
-  );
+  const [items, setItems] = useState<Appointment[]>([]);
   const [pending, setPending] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!session) return;
+    void getAppointments(session.email)
+      .then(setItems)
+      .catch((err) => toast.error(err instanceof Error ? err.message : "Failed to load appointments"));
+  }, [session?.email]);
 
   const sorted = [...items].sort((a, b) =>
     (a.date + a.time).localeCompare(b.date + b.time),
   );
 
-  const confirmCancel = () => {
+  const confirmCancel = async () => {
     if (!pending) return;
-    cancelAppointment(pending);
-    setItems(session ? getAppointments(session.email) : []);
-    setPending(null);
-    toast.success("Appointment cancelled");
+    try {
+      await cancelAppointment(pending);
+      setItems(session ? await getAppointments(session.email) : []);
+      setPending(null);
+      toast.success("Appointment cancelled");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not cancel appointment");
+    }
   };
 
   return (
