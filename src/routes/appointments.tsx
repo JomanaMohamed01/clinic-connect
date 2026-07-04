@@ -22,6 +22,7 @@ import {
   getAppointments,
   getSession,
 } from "@/lib/clinic-storage";
+import { isReceptionStaff } from "@/lib/reception-api";
 
 export const Route = createFileRoute("/appointments")({
   head: () => ({
@@ -35,6 +36,9 @@ export const Route = createFileRoute("/appointments")({
       await ensureAuthReady();
       if (!getSession()) {
         throw redirect({ to: "/auth" });
+      }
+      if (await isReceptionStaff()) {
+        throw redirect({ to: "/reception" });
       }
     }
   },

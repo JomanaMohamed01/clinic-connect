@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ReceptionRouteImport } from './routes/reception'
 import { Route as DoctorsRouteImport } from './routes/doctors'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppointmentsRouteImport } from './routes/appointments'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BookDoctorIdRouteImport } from './routes/book.$doctorId'
 
+const ReceptionRoute = ReceptionRouteImport.update({
+  id: '/reception',
+  path: '/reception',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DoctorsRoute = DoctorsRouteImport.update({
   id: '/doctors',
   path: '/doctors',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/appointments': typeof AppointmentsRoute
   '/auth': typeof AuthRoute
   '/doctors': typeof DoctorsRoute
+  '/reception': typeof ReceptionRoute
   '/book/$doctorId': typeof BookDoctorIdRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/appointments': typeof AppointmentsRoute
   '/auth': typeof AuthRoute
   '/doctors': typeof DoctorsRoute
+  '/reception': typeof ReceptionRoute
   '/book/$doctorId': typeof BookDoctorIdRoute
 }
 export interface FileRoutesById {
@@ -61,19 +69,33 @@ export interface FileRoutesById {
   '/appointments': typeof AppointmentsRoute
   '/auth': typeof AuthRoute
   '/doctors': typeof DoctorsRoute
+  '/reception': typeof ReceptionRoute
   '/book/$doctorId': typeof BookDoctorIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/appointments' | '/auth' | '/doctors' | '/book/$doctorId'
+  fullPaths:
+    | '/'
+    | '/appointments'
+    | '/auth'
+    | '/doctors'
+    | '/reception'
+    | '/book/$doctorId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/appointments' | '/auth' | '/doctors' | '/book/$doctorId'
+  to:
+    | '/'
+    | '/appointments'
+    | '/auth'
+    | '/doctors'
+    | '/reception'
+    | '/book/$doctorId'
   id:
     | '__root__'
     | '/'
     | '/appointments'
     | '/auth'
     | '/doctors'
+    | '/reception'
     | '/book/$doctorId'
   fileRoutesById: FileRoutesById
 }
@@ -82,11 +104,19 @@ export interface RootRouteChildren {
   AppointmentsRoute: typeof AppointmentsRoute
   AuthRoute: typeof AuthRoute
   DoctorsRoute: typeof DoctorsRoute
+  ReceptionRoute: typeof ReceptionRoute
   BookDoctorIdRoute: typeof BookDoctorIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reception': {
+      id: '/reception'
+      path: '/reception'
+      fullPath: '/reception'
+      preLoaderRoute: typeof ReceptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/doctors': {
       id: '/doctors'
       path: '/doctors'
@@ -130,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppointmentsRoute: AppointmentsRoute,
   AuthRoute: AuthRoute,
   DoctorsRoute: DoctorsRoute,
+  ReceptionRoute: ReceptionRoute,
   BookDoctorIdRoute: BookDoctorIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -21,6 +21,7 @@ import {
   isSlotTaken,
   refreshDoctorBookings,
 } from "@/lib/clinic-storage";
+import { isReceptionStaff } from "@/lib/reception-api";
 
 export const Route = createFileRoute("/book/$doctorId")({
   head: () => ({
@@ -34,6 +35,9 @@ export const Route = createFileRoute("/book/$doctorId")({
       await ensureAuthReady();
       if (!getSession()) {
         throw redirect({ to: "/auth" });
+      }
+      if (await isReceptionStaff()) {
+        throw redirect({ to: "/reception" });
       }
     }
     if (!getDoctor(params.doctorId)) {

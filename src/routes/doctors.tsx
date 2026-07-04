@@ -2,6 +2,7 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { DOCTORS, ensureAuthReady, getSession } from "@/lib/clinic-storage";
+import { isReceptionStaff } from "@/lib/reception-api";
 
 export const Route = createFileRoute("/doctors")({
   head: () => ({
@@ -15,6 +16,9 @@ export const Route = createFileRoute("/doctors")({
       await ensureAuthReady();
       if (!getSession()) {
         throw redirect({ to: "/auth" });
+      }
+      if (await isReceptionStaff()) {
+        throw redirect({ to: "/reception" });
       }
     }
   },
