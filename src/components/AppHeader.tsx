@@ -39,8 +39,7 @@ export function AppHeader() {
             size="icon"
             className="rounded-full"
             onClick={() => {
-              signOut();
-              navigate({ to: "/auth" });
+              void signOut().then(() => navigate({ to: "/auth" }));
             }}
             aria-label="Sign out"
           >

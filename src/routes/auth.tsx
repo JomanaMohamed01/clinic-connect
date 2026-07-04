@@ -28,16 +28,16 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       if (mode === "signup") {
         if (!name.trim()) throw new Error("Please enter your name.");
-        if (password.length < 4) throw new Error("Password must be at least 4 characters.");
-        signUp(name.trim(), email.trim(), password);
+        if (password.length < 6) throw new Error("Password must be at least 6 characters.");
+        await signUp(name.trim(), email.trim(), password);
         toast.success(`Welcome, ${name.split(" ")[0]}!`);
       } else {
-        signIn(email.trim(), password);
+        await signIn(email.trim(), password);
         toast.success("Welcome back!");
       }
       navigate({ to: "/doctors" });
@@ -121,7 +121,7 @@ function AuthPage() {
           </Tabs>
 
           <p className="mt-5 text-center text-xs text-muted-foreground">
-            Demo mode — your data is stored only in this browser.
+            Your appointments are saved securely to your clinic account.
           </p>
         </div>
       </div>

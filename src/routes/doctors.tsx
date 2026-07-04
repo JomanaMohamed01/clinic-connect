@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
-import { DOCTORS, getSession } from "@/lib/clinic-storage";
+import { DOCTORS, ensureAuthReady, getSession } from "@/lib/clinic-storage";
 
 export const Route = createFileRoute("/doctors")({
   head: () => ({
@@ -10,9 +10,12 @@ export const Route = createFileRoute("/doctors")({
       { name: "description", content: "Pick a doctor to book a 15-minute appointment at Bloom Clinic." },
     ],
   }),
-  beforeLoad: () => {
-    if (typeof window !== "undefined" && !getSession()) {
-      throw redirect({ to: "/auth" });
+  beforeLoad: async () => {
+    if (typeof window !== "undefined") {
+      await ensureAuthReady();
+      if (!getSession()) {
+        throw redirect({ to: "/auth" });
+      }
     }
   },
   component: DoctorsPage,
