@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Heart, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { signIn, signUp } from "@/lib/clinic-storage";
+import { ensureAuthReady, getSession, signIn, signUp } from "@/lib/clinic-storage";
+import {
+  RECEPTION_PASSWORD,
+  isReceptionEmail,
+  isReceptionStaff,
+  receptionSignIn,
+} from "@/lib/reception-api";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -17,6 +23,17 @@ export const Route = createFileRoute("/auth")({
       { property: "og:description", content: "Warm, friendly clinic appointment booking." },
     ],
   }),
+  beforeLoad: async () => {
+    if (typeof window !== "undefined") {
+      await ensureAuthReady();
+      if (getSession()) {
+        if (await isReceptionStaff()) {
+          throw redirect({ to: "/reception" });
+        }
+        throw redirect({ to: "/doctors" });
+      }
+    }
+  },
   component: AuthPage,
 });
 
@@ -28,18 +45,35 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const trimmedEmail = email.trim();
+
       if (mode === "signup") {
+        if (isReceptionEmail(trimmedEmail)) {
+          throw new Error("Reception staff should sign in, not create an account.");
+        }
         if (!name.trim()) throw new Error("Please enter your name.");
-        if (password.length < 4) throw new Error("Password must be at least 4 characters.");
-        signUp(name.trim(), email.trim(), password);
+        if (password.length < 6) throw new Error("Password must be at least 6 characters.");
+        await signUp(name.trim(), trimmedEmail, password);
         toast.success(`Welcome, ${name.split(" ")[0]}!`);
-      } else {
-        signIn(email.trim(), password);
-        toast.success("Welcome back!");
+        navigate({ to: "/doctors" });
+        return;
       }
+
+      if (isReceptionEmail(trimmedEmail)) {
+        if (password !== RECEPTION_PASSWORD) {
+          throw new Error("Invalid email or password.");
+        }
+        await receptionSignIn(trimmedEmail, password);
+        toast.success("Welcome, reception desk.");
+        navigate({ to: "/reception" });
+        return;
+      }
+
+      await signIn(trimmedEmail, password);
+      toast.success("Welcome back!");
       navigate({ to: "/doctors" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
@@ -121,7 +155,7 @@ function AuthPage() {
           </Tabs>
 
           <p className="mt-5 text-center text-xs text-muted-foreground">
-            Demo mode — your data is stored only in this browser.
+            Your appointments are saved securely to your clinic account.
           </p>
         </div>
       </div>

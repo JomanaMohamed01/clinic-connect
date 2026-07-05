@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { ArrowLeft, CalendarIcon, Check, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,11 +14,14 @@ import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
 import {
   addAppointment,
+  ensureAuthReady,
   generateTimeSlots,
   getDoctor,
   getSession,
   isSlotTaken,
+  refreshDoctorBookings,
 } from "@/lib/clinic-storage";
+import { isReceptionStaff } from "@/lib/reception-api";
 
 export const Route = createFileRoute("/book/$doctorId")({
   head: () => ({
@@ -27,9 +30,15 @@ export const Route = createFileRoute("/book/$doctorId")({
       { name: "description", content: "Pick a time and date, then confirm your 15-minute visit." },
     ],
   }),
-  beforeLoad: ({ params }) => {
-    if (typeof window !== "undefined" && !getSession()) {
-      throw redirect({ to: "/auth" });
+  beforeLoad: async ({ params }) => {
+    if (typeof window !== "undefined") {
+      await ensureAuthReady();
+      if (!getSession()) {
+        throw redirect({ to: "/auth" });
+      }
+      if (await isReceptionStaff()) {
+        throw redirect({ to: "/reception" });
+      }
     }
     if (!getDoctor(params.doctorId)) {
       throw redirect({ to: "/doctors" });
@@ -50,9 +59,17 @@ function BookPage() {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState<"male" | "female" | "other">("female");
   const [notes, setNotes] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [, setBookingsTick] = useState(0);
 
-  const slots = useMemo(() => generateTimeSlots(), []);
+  const slots = useMemo(() => generateTimeSlots(doctorId), [doctorId]);
   const dateStr = date ? format(date, "yyyy-MM-dd") : null;
+
+  useEffect(() => {
+    void refreshDoctorBookings(doctorId)
+      .then(() => setBookingsTick((n) => n + 1))
+      .catch((err) => toast.error(err instanceof Error ? err.message : "Failed to load availability"));
+  }, [doctorId]);
 
   const isFriday = (d: Date) => d.getDay() === 5;
   const isPast = (d: Date) => {
@@ -61,7 +78,7 @@ function BookPage() {
     return d < today;
   };
 
-  const handleConfirm = (e: React.FormEvent) => {
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
     const session = getSession();
     if (!session) return navigate({ to: "/auth" });
@@ -74,22 +91,31 @@ function BookPage() {
       return toast.error("That slot was just taken. Please pick another time.");
     }
 
-    addAppointment({
-      userEmail: session.email,
-      doctorId: doctor.id,
-      doctorName: doctor.name,
-      specialty: doctor.specialty,
-      date: dateStr,
-      time,
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      age: ageNum,
-      gender,
-      notes: notes.trim(),
-    });
+    setSubmitting(true);
+    try {
+      await addAppointment({
+        userEmail: session.email,
+        doctorId: doctor.id,
+        doctorName: doctor.name,
+        specialty: doctor.specialty,
+        date: dateStr,
+        time,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        age: ageNum,
+        gender,
+        notes: notes.trim(),
+      });
 
-    toast.success("Appointment confirmed!");
-    navigate({ to: "/appointments" });
+      toast.success("Appointment confirmed!");
+      navigate({ to: "/appointments" });
+    } catch (err) {
+      await refreshDoctorBookings(doctorId);
+      setBookingsTick((n) => n + 1);
+      toast.error(err instanceof Error ? err.message : "Could not book appointment");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -263,6 +289,7 @@ function BookPage() {
 
           <Button
             type="submit"
+            disabled={submitting}
             className="h-12 w-full rounded-full bg-peach-gradient text-base shadow-soft hover:opacity-95"
           >
             <Check className="mr-2 h-4 w-4" />
