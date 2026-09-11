@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Heart, Stethoscope } from "lucide-react";
+import { Eye, EyeOff, Heart, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,41 @@ import {
   isReceptionStaff,
   receptionSignIn,
 } from "@/lib/reception-api";
+
+type PasswordStrength = "weak" | "medium" | "strong";
+
+function getPasswordStrength(password: string): PasswordStrength | null {
+  if (!password) return null;
+
+  let score = 0;
+  if (password.length >= 8) score += 1;
+  if (password.length >= 12) score += 1;
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 1;
+  if (/\d/.test(password)) score += 1;
+  if (/[^A-Za-z0-9]/.test(password)) score += 1;
+
+  if (score <= 2) return "weak";
+  if (score <= 3) return "medium";
+  return "strong";
+}
+
+const strengthLabel: Record<PasswordStrength, string> = {
+  weak: "Weak",
+  medium: "Medium",
+  strong: "Strong",
+};
+
+const strengthClass: Record<PasswordStrength, string> = {
+  weak: "text-destructive",
+  medium: "text-amber-600",
+  strong: "text-emerald-600",
+};
+
+const strengthBarClass: Record<PasswordStrength, string> = {
+  weak: "w-1/3 bg-destructive",
+  medium: "w-2/3 bg-amber-500",
+  strong: "w-full bg-emerald-500",
+};
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -44,6 +79,9 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const passwordStrength = getPasswordStrength(password);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +93,9 @@ function AuthPage() {
           throw new Error("Reception staff should sign in, not create an account.");
         }
         if (!name.trim()) throw new Error("Please enter your name.");
-        if (password.length < 6) throw new Error("Password must be at least 6 characters.");
+        if (passwordStrength !== "strong") {
+          throw new Error("Password must be strong.");
+        }
         await signUp(name.trim(), trimmedEmail, password);
         toast.success(`Welcome, ${name.split(" ")[0]}!`);
         navigate({ to: "/doctors" });
@@ -134,15 +174,43 @@ function AuthPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="h-11 rounded-xl"
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="h-11 rounded-xl pr-11"
+                    autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground transition-colors hover:text-foreground"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                {mode === "signup" && passwordStrength && (
+                  <div className="space-y-1.5 pt-1" aria-live="polite">
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className={`h-full rounded-full transition-all ${strengthBarClass[passwordStrength]}`}
+                      />
+                    </div>
+                    <p className={`text-xs font-medium ${strengthClass[passwordStrength]}`}>
+                      Password strength: {strengthLabel[passwordStrength]}
+                    </p>
+                    {passwordStrength !== "strong" && (
+                      <p className="text-xs text-muted-foreground">
+                        Use 8+ characters with upper &amp; lowercase, a number, and a symbol.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
 
               <Button
