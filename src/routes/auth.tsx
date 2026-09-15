@@ -18,12 +18,38 @@ import { cn } from "@/lib/utils";
 type PasswordStrength = "weak" | "medium" | "strong";
 
 const EMPTY_FIELD_MESSAGE = "This field needs to be filled";
+const INVALID_EMAIL_MESSAGE = "Please write your email correctly";
+
+const ALLOWED_EMAIL_DOMAINS = new Set([
+  "gmail.com",
+  "googlemail.com",
+  "outlook.com",
+  "hotmail.com",
+  "live.com",
+  "msn.com",
+  "yahoo.com",
+  "yahoo.co.uk",
+  "ymail.com",
+  "icloud.com",
+  "me.com",
+  "mac.com",
+  "aol.com",
+  "proton.me",
+  "protonmail.com",
+]);
 
 type FieldErrors = {
   name?: boolean;
-  email?: boolean;
+  email?: "empty" | "invalid";
   password?: boolean;
 };
+
+function isAllowedSignupEmail(email: string): boolean {
+  const trimmed = email.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return false;
+  const domain = trimmed.split("@")[1];
+  return ALLOWED_EMAIL_DOMAINS.has(domain);
+}
 
 function getPasswordStrength(password: string): PasswordStrength | null {
   if (!password) return null;
@@ -131,7 +157,11 @@ function AuthPage() {
 
     const nextErrors: FieldErrors = {};
     if (mode === "signup" && !name.trim()) nextErrors.name = true;
-    if (!email.trim()) nextErrors.email = true;
+    if (!email.trim()) {
+      nextErrors.email = "empty";
+    } else if (mode === "signup" && !isAllowedSignupEmail(email)) {
+      nextErrors.email = "invalid";
+    }
     if (!password) nextErrors.password = true;
 
     if (Object.keys(nextErrors).length > 0) {
@@ -246,7 +276,11 @@ function AuthPage() {
                   className={cn("h-11 rounded-xl", fieldErrors.email && errorInputClass)}
                 />
                 {fieldErrors.email && (
-                  <p className="text-xs text-destructive">{EMPTY_FIELD_MESSAGE}</p>
+                  <p className="text-xs text-destructive">
+                    {fieldErrors.email === "invalid"
+                      ? INVALID_EMAIL_MESSAGE
+                      : EMPTY_FIELD_MESSAGE}
+                  </p>
                 )}
               </div>
 
