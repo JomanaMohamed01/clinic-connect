@@ -309,7 +309,7 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
-                className="rounded-xl"
+                className="resize-none rounded-xl"
               />
             </div>
           </section>

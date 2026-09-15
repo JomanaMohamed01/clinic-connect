@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff, Heart, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -80,8 +80,27 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  // Block browser autofill until the user focuses a field.
+  const [autofillReady, setAutofillReady] = useState(false);
 
   const passwordStrength = getPasswordStrength(password);
+
+  useEffect(() => {
+    setEmail("");
+    setPassword("");
+    setName("");
+    // Chrome often fills saved credentials after the first paint.
+    const clearId = window.setTimeout(() => {
+      setEmail("");
+      setPassword("");
+      setName("");
+    }, 50);
+    return () => window.clearTimeout(clearId);
+  }, []);
+
+  const unlockAutofill = () => {
+    if (!autofillReady) setAutofillReady(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,16 +163,20 @@ function AuthPage() {
               <TabsTrigger value="signup" className="rounded-full">Sign up</TabsTrigger>
             </TabsList>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4" autoComplete="off">
               <TabsContent value="signup" className="mt-0 space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="name">Full name</Label>
                   <Input
                     id="name"
+                    name="bloom-name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    onFocus={unlockAutofill}
+                    readOnly={!autofillReady}
                     placeholder="Sara Ahmed"
                     required={mode === "signup"}
+                    autoComplete="off"
                     className="h-11 rounded-xl"
                   />
                 </div>
@@ -163,11 +186,15 @@ function AuthPage() {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="bloom-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  onFocus={unlockAutofill}
+                  readOnly={!autofillReady}
                   placeholder="you@email.com"
                   required
+                  autoComplete="off"
                   className="h-11 rounded-xl"
                 />
               </div>
@@ -177,13 +204,16 @@ function AuthPage() {
                 <div className="relative">
                   <Input
                     id="password"
+                    name="bloom-password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onFocus={unlockAutofill}
+                    readOnly={!autofillReady}
                     placeholder="••••••••"
                     required
                     className="h-11 rounded-xl pr-11"
-                    autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                    autoComplete="off"
                   />
                   <button
                     type="button"
