@@ -13,8 +13,17 @@ import {
   isReceptionStaff,
   receptionSignIn,
 } from "@/lib/reception-api";
+import { cn } from "@/lib/utils";
 
 type PasswordStrength = "weak" | "medium" | "strong";
+
+const EMPTY_FIELD_MESSAGE = "This field needs to be filled";
+
+type FieldErrors = {
+  name?: boolean;
+  email?: boolean;
+  password?: boolean;
+};
 
 function getPasswordStrength(password: string): PasswordStrength | null {
   if (!password) return null;
@@ -80,6 +89,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   // Block browser autofill until the user focuses a field.
   const [autofillReady, setAutofillReady] = useState(false);
 
@@ -102,8 +112,35 @@ function AuthPage() {
     if (!autofillReady) setAutofillReady(true);
   };
 
+  const clearFieldError = (field: keyof FieldErrors) => {
+    setFieldErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  };
+
+  const handleModeChange = (value: string) => {
+    setMode(value as typeof mode);
+    setFieldErrors({});
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const nextErrors: FieldErrors = {};
+    if (mode === "signup" && !name.trim()) nextErrors.name = true;
+    if (!email.trim()) nextErrors.email = true;
+    if (!password) nextErrors.password = true;
+
+    if (Object.keys(nextErrors).length > 0) {
+      setFieldErrors(nextErrors);
+      return;
+    }
+
+    setFieldErrors({});
+
     try {
       const trimmedEmail = email.trim();
 
@@ -111,7 +148,6 @@ function AuthPage() {
         if (isReceptionEmail(trimmedEmail)) {
           throw new Error("Reception staff should sign in, not create an account.");
         }
-        if (!name.trim()) throw new Error("Please enter your name.");
         if (passwordStrength !== "strong") {
           throw new Error("Password must be strong.");
         }
@@ -139,6 +175,9 @@ function AuthPage() {
     }
   };
 
+  const errorInputClass =
+    "border-destructive focus-visible:border-destructive focus-visible:ring-destructive";
+
   return (
     <div className="bg-warm-gradient relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-primary/25 blur-3xl" />
@@ -157,13 +196,13 @@ function AuthPage() {
         </div>
 
         <div className="w-full rounded-3xl border border-border/60 bg-card p-6 shadow-card">
-          <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)}>
+          <Tabs value={mode} onValueChange={handleModeChange}>
             <TabsList className="grid w-full grid-cols-2 rounded-full bg-muted p-1">
               <TabsTrigger value="signin" className="rounded-full">Sign in</TabsTrigger>
               <TabsTrigger value="signup" className="rounded-full">Sign up</TabsTrigger>
             </TabsList>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4" autoComplete="off">
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4" autoComplete="off" noValidate>
               <TabsContent value="signup" className="mt-0 space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="name">Full name</Label>
@@ -171,14 +210,20 @@ function AuthPage() {
                     id="name"
                     name="bloom-name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      clearFieldError("name");
+                    }}
                     onFocus={unlockAutofill}
                     readOnly={!autofillReady}
                     placeholder="Sara Ahmed"
-                    required={mode === "signup"}
                     autoComplete="off"
-                    className="h-11 rounded-xl"
+                    aria-invalid={fieldErrors.name || undefined}
+                    className={cn("h-11 rounded-xl", fieldErrors.name && errorInputClass)}
                   />
+                  {fieldErrors.name && (
+                    <p className="text-xs text-destructive">{EMPTY_FIELD_MESSAGE}</p>
+                  )}
                 </div>
               </TabsContent>
 
@@ -189,14 +234,20 @@ function AuthPage() {
                   name="bloom-email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    clearFieldError("email");
+                  }}
                   onFocus={unlockAutofill}
                   readOnly={!autofillReady}
                   placeholder="you@email.com"
-                  required
                   autoComplete="off"
-                  className="h-11 rounded-xl"
+                  aria-invalid={fieldErrors.email || undefined}
+                  className={cn("h-11 rounded-xl", fieldErrors.email && errorInputClass)}
                 />
+                {fieldErrors.email && (
+                  <p className="text-xs text-destructive">{EMPTY_FIELD_MESSAGE}</p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -207,13 +258,19 @@ function AuthPage() {
                     name="bloom-password"
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      clearFieldError("password");
+                    }}
                     onFocus={unlockAutofill}
                     readOnly={!autofillReady}
                     placeholder="••••••••"
-                    required
-                    className="h-11 rounded-xl pr-11"
+                    className={cn(
+                      "h-11 rounded-xl pr-11",
+                      fieldErrors.password && errorInputClass,
+                    )}
                     autoComplete="off"
+                    aria-invalid={fieldErrors.password || undefined}
                   />
                   <button
                     type="button"
@@ -224,6 +281,9 @@ function AuthPage() {
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
+                {fieldErrors.password && (
+                  <p className="text-xs text-destructive">{EMPTY_FIELD_MESSAGE}</p>
+                )}
                 {mode === "signup" && passwordStrength && (
                   <div className="space-y-1.5 pt-1" aria-live="polite">
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
