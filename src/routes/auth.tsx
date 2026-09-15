@@ -19,6 +19,8 @@ type PasswordStrength = "weak" | "medium" | "strong";
 
 const EMPTY_FIELD_MESSAGE = "This field needs to be filled";
 const INVALID_EMAIL_MESSAGE = "Please write your email correctly";
+const PASSWORD_REQUIREMENTS_MESSAGE =
+  "Your password must contain numbers and characters like (/, *, @), with no spaces";
 
 const ALLOWED_EMAIL_DOMAINS = new Set([
   "gmail.com",
@@ -41,7 +43,7 @@ const ALLOWED_EMAIL_DOMAINS = new Set([
 type FieldErrors = {
   name?: boolean;
   email?: "empty" | "invalid";
-  password?: boolean;
+  password?: "empty" | "requirements";
 };
 
 function isAllowedSignupEmail(email: string): boolean {
@@ -49,6 +51,11 @@ function isAllowedSignupEmail(email: string): boolean {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return false;
   const domain = trimmed.split("@")[1];
   return ALLOWED_EMAIL_DOMAINS.has(domain);
+}
+
+function meetsPasswordCharacterRules(password: string): boolean {
+  if (/\s/.test(password)) return false;
+  return /\d/.test(password) && /[/*@]/.test(password);
 }
 
 function getPasswordStrength(password: string): PasswordStrength | null {
@@ -162,7 +169,11 @@ function AuthPage() {
     } else if (mode === "signup" && !isAllowedSignupEmail(email)) {
       nextErrors.email = "invalid";
     }
-    if (!password) nextErrors.password = true;
+    if (!password) {
+      nextErrors.password = "empty";
+    } else if (mode === "signup" && !meetsPasswordCharacterRules(password)) {
+      nextErrors.password = "requirements";
+    }
 
     if (Object.keys(nextErrors).length > 0) {
       setFieldErrors(nextErrors);
@@ -315,8 +326,20 @@ function AuthPage() {
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-                {fieldErrors.password && (
+                {fieldErrors.password === "empty" && (
                   <p className="text-xs text-destructive">{EMPTY_FIELD_MESSAGE}</p>
+                )}
+                {mode === "signup" && (
+                  <p
+                    className={cn(
+                      "text-xs",
+                      fieldErrors.password === "requirements"
+                        ? "text-destructive"
+                        : "text-muted-foreground",
+                    )}
+                  >
+                    {PASSWORD_REQUIREMENTS_MESSAGE}
+                  </p>
                 )}
                 {mode === "signup" && passwordStrength && (
                   <div className="space-y-1.5 pt-1" aria-live="polite">
