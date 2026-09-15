@@ -200,15 +200,15 @@ function ReceptionPage() {
                   key={b.id}
                   className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-soft"
                 >
-                  <div className="flex flex-wrap items-start gap-4 p-5">
-                    <div className="flex min-w-[84px] flex-col items-center justify-center rounded-2xl bg-peach-gradient px-4 py-3 text-center text-primary-foreground">
+                  <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-4 gap-y-3 p-5 max-[430px]:grid-cols-[auto_1fr]">
+                    <div className="flex min-w-[84px] shrink-0 flex-col items-center justify-center rounded-2xl bg-peach-gradient px-4 py-3 text-center text-primary-foreground">
                       <div className="text-xs uppercase tracking-widest opacity-90">
                         {format(slot, "MMM")}
                       </div>
                       <div className="font-display text-2xl leading-none">{formatTime12h(slot)}</div>
                     </div>
 
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 max-[430px]:col-span-2 max-[430px]:col-start-1 max-[430px]:row-start-2">
                       <h3 className="font-display text-lg leading-tight">{b.doctorName}</h3>
                       <p className="text-sm text-primary">{patientName}</p>
                       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
@@ -230,7 +230,7 @@ function ReceptionPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setPendingCancel(b.id)}
-                      className="rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      className="shrink-0 justify-self-end rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive max-[430px]:col-start-2 max-[430px]:row-start-1"
                     >
                       <Trash2 className="mr-1.5 h-4 w-4" />
                       Cancel
