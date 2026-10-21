@@ -246,6 +246,22 @@ export async function signOut() {
   bookingsCache = [];
 }
 
+export async function deleteAccount(): Promise<void> {
+  if (!cachedUserId) throw new Error("You must be signed in to delete your account.");
+
+  const { error } = await supabase.rpc("delete_own_account");
+  if (error) {
+    if (error.code === "PGRST202" || /delete_own_account/i.test(error.message)) {
+      throw new Error(
+        "Account deletion is not enabled yet. Run sql/delete_own_account.sql in the Supabase SQL editor.",
+      );
+    }
+    throw new Error(error.message);
+  }
+
+  await signOut();
+}
+
 // ---------- appointments ----------
 export async function refreshDoctorBookings(doctorId: string): Promise<void> {
   const { data, error } = await supabase

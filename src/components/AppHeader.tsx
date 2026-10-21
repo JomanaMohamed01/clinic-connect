@@ -1,17 +1,46 @@
+import { useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { Calendar, LogOut, Stethoscope } from "lucide-react";
+import { Calendar, LogOut, Stethoscope, UserX } from "lucide-react";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getSession, signOut } from "@/lib/clinic-storage";
+import { deleteAccount, getSession, signOut } from "@/lib/clinic-storage";
 
 export function AppHeader() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const session = typeof window !== "undefined" ? getSession() : null;
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const confirmDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      await deleteAccount();
+      setConfirmDelete(false);
+      toast.success("Your account has been deleted.");
+      navigate({ to: "/auth" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not delete your account.");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   if (pathname === "/" || pathname === "/auth") return null;
 
@@ -61,9 +90,46 @@ export function AppHeader() {
               </span>
               Sign out
             </DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-border/70" />
+            <DropdownMenuItem
+              className="cursor-pointer gap-3 rounded-xl px-2.5 py-2.5 text-destructive focus:text-destructive"
+              onSelect={() => setConfirmDelete(true)}
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
+                <UserX className="h-4 w-4" />
+              </span>
+              Delete account
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <AlertDialog open={confirmDelete} onOpenChange={(open) => !deleting && setConfirmDelete(open)}>
+        <AlertDialogContent className="rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete your account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This permanently removes your Bloom Clinic sign-in and every appointment saved to
+              this account. This can’t be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-full" disabled={deleting}>
+              Keep my account
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(event) => {
+                event.preventDefault();
+                void confirmDeleteAccount();
+              }}
+              disabled={deleting}
+              className="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? "Deleting…" : "Delete account"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </header>
   );
 }
