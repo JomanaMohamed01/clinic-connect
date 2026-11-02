@@ -147,7 +147,10 @@ function BookPage() {
           <section>
             <div className="mb-3 flex items-center gap-2">
               <CalendarIcon className="h-4 w-4 text-primary" />
-              <h3 className="font-display text-lg">Pick a date</h3>
+              <h3 className="font-display text-lg">
+                Pick a date
+                <span className="text-red-600" aria-hidden="true"> *</span>
+              </h3>
               <span className="text-xs text-muted-foreground">(Fridays closed)</span>
             </div>
             <Popover>
@@ -184,7 +187,10 @@ function BookPage() {
             <section>
               <div className="mb-3 flex items-center gap-2">
                 <Clock className="h-4 w-4 text-primary" />
-                <h3 className="font-display text-lg">Pick a time</h3>
+                <h3 className="font-display text-lg">
+                  Pick a time
+                  <span className="text-red-600" aria-hidden="true"> *</span>
+                </h3>
                 <span className="text-xs text-muted-foreground">(15 min each)</span>
               </div>
               <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
@@ -219,7 +225,10 @@ function BookPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="fn">First name</Label>
+                <Label htmlFor="fn">
+                  First name
+                  <span className="text-red-600" aria-hidden="true"> *</span>
+                </Label>
                 <Input
                   id="fn"
                   value={firstName}
@@ -229,7 +238,10 @@ function BookPage() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="ln">Last name</Label>
+                <Label htmlFor="ln">
+                  Last name
+                  <span className="text-red-600" aria-hidden="true"> *</span>
+                </Label>
                 <Input
                   id="ln"
                   value={lastName}
@@ -242,7 +254,10 @@ function BookPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="age">Age</Label>
+                <Label htmlFor="age">
+                  Age
+                  <span className="text-red-600" aria-hidden="true"> *</span>
+                </Label>
                 <Input
                   id="age"
                   type="number"
@@ -255,7 +270,10 @@ function BookPage() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Gender</Label>
+                <Label>
+                  Gender
+                  <span className="text-red-600" aria-hidden="true"> *</span>
+                </Label>
                 <RadioGroup
                   value={gender}
                   onValueChange={(v) => setGender(v as typeof gender)}
