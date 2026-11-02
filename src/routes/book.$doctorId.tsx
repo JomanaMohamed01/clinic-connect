@@ -27,7 +27,7 @@ export const Route = createFileRoute("/book/$doctorId")({
   head: () => ({
     meta: [
       { title: "Book an appointment — Bloom Clinic" },
-      { name: "description", content: "Pick a time and date, then confirm your 15-minute visit." },
+      { name: "description", content: "Pick a date and time, then confirm your 15-minute visit." },
     ],
   }),
   beforeLoad: async ({ params }) => {
@@ -143,38 +143,6 @@ function BookPage() {
         </div>
 
         <form onSubmit={handleConfirm} className="space-y-8">
-          {/* Time */}
-          <section>
-            <div className="mb-3 flex items-center gap-2">
-              <Clock className="h-4 w-4 text-primary" />
-              <h3 className="font-display text-lg">Pick a time</h3>
-              <span className="text-xs text-muted-foreground">(15 min each)</span>
-            </div>
-            <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-              {slots.map((s) => {
-                const taken = dateStr ? isSlotTaken(doctorId, dateStr, s) : false;
-                const active = time === s;
-                return (
-                  <button
-                    key={s}
-                    type="button"
-                    disabled={taken}
-                    onClick={() => setTime(s)}
-                    className={cn(
-                      "rounded-xl border border-border/70 py-2 text-sm font-medium transition-all",
-                      active
-                        ? "border-transparent bg-peach-gradient text-primary-foreground shadow-soft"
-                        : "bg-card hover:border-primary/40 hover:bg-accent/50",
-                      taken && "cursor-not-allowed opacity-40 line-through",
-                    )}
-                  >
-                    {s}
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-
           {/* Date */}
           <section>
             <div className="mb-3 flex items-center gap-2">
@@ -200,13 +168,50 @@ function BookPage() {
                 <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={setDate}
+                  onSelect={(next) => {
+                    setDate(next);
+                    setTime(null);
+                  }}
                   disabled={(d) => isFriday(d) || isPast(d)}
                   className={cn("pointer-events-auto p-3")}
                 />
               </PopoverContent>
             </Popover>
           </section>
+
+          {/* Time — only after a date is chosen */}
+          {dateStr && (
+            <section>
+              <div className="mb-3 flex items-center gap-2">
+                <Clock className="h-4 w-4 text-primary" />
+                <h3 className="font-display text-lg">Pick a time</h3>
+                <span className="text-xs text-muted-foreground">(15 min each)</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+                {slots.map((s) => {
+                  const taken = isSlotTaken(doctorId, dateStr, s);
+                  const active = time === s;
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      disabled={taken}
+                      onClick={() => setTime(s)}
+                      className={cn(
+                        "rounded-xl border border-border/70 py-2 text-sm font-medium transition-all",
+                        active
+                          ? "border-transparent bg-peach-gradient text-primary-foreground shadow-soft"
+                          : "bg-card hover:border-primary/40 hover:bg-accent/50",
+                        taken && "cursor-not-allowed opacity-40 line-through",
+                      )}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          )}
 
           {/* Patient details */}
           <section className="space-y-4 rounded-3xl border border-border/60 bg-card p-5 shadow-soft">
