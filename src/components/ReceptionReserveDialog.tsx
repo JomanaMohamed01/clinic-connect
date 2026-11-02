@@ -142,7 +142,10 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <section>
-            <Label className="mb-2 block">Doctor</Label>
+            <Label className="mb-2 block">
+              Doctor
+              <span className="text-red-600" aria-hidden="true"> *</span>
+            </Label>
             <div className="grid grid-cols-2 gap-2">
               {DOCTORS.map((d) => (
                 <button
@@ -178,7 +181,10 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
               <section>
                 <div className="mb-2 flex items-center gap-2">
                   <CalendarIcon className="h-4 w-4 text-primary" />
-                  <Label>Date</Label>
+                  <Label>
+                    Date
+                    <span className="text-red-600" aria-hidden="true"> *</span>
+                  </Label>
                 </div>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -208,7 +214,10 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
               <section>
                 <div className="mb-2 flex items-center gap-2">
                   <Clock className="h-4 w-4 text-primary" />
-                  <Label>Time</Label>
+                  <Label>
+                    Time
+                    <span className="text-red-600" aria-hidden="true"> *</span>
+                  </Label>
                   {loadingSlots && (
                     <span className="text-xs text-muted-foreground">Loading…</span>
                   )}
@@ -244,7 +253,10 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
             <h4 className="font-display text-base">Patient details</h4>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="r-fn">First name</Label>
+                <Label htmlFor="r-fn">
+                  First name
+                  <span className="text-red-600" aria-hidden="true"> *</span>
+                </Label>
                 <Input
                   id="r-fn"
                   value={firstName}
@@ -254,7 +266,10 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="r-ln">Last name</Label>
+                <Label htmlFor="r-ln">
+                  Last name
+                  <span className="text-red-600" aria-hidden="true"> *</span>
+                </Label>
                 <Input
                   id="r-ln"
                   value={lastName}
@@ -266,7 +281,10 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="r-age">Age</Label>
+                <Label htmlFor="r-age">
+                  Age
+                  <span className="text-red-600" aria-hidden="true"> *</span>
+                </Label>
                 <Input
                   id="r-age"
                   type="number"
@@ -279,7 +297,10 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Gender</Label>
+                <Label>
+                  Gender
+                  <span className="text-red-600" aria-hidden="true"> *</span>
+                </Label>
                 <RadioGroup
                   value={gender}
                   onValueChange={(v) => setGender(v as typeof gender)}
