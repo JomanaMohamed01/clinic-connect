@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { Calendar, LogOut, Stethoscope, UserX } from "lucide-react";
+import { Calendar, House, LogOut, Stethoscope, UserX } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -70,6 +70,15 @@ export function AppHeader() {
             sideOffset={8}
             className="w-56 rounded-2xl border-border/70 p-2 shadow-card"
           >
+            <DropdownMenuItem
+              className="cursor-pointer gap-3 rounded-xl px-2.5 py-2.5"
+              onSelect={() => navigate({ to: "/doctors" })}
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary">
+                <House className="h-4 w-4" />
+              </span>
+              Home
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer gap-3 rounded-xl px-2.5 py-2.5"
               onSelect={() => navigate({ to: "/appointments" })}
