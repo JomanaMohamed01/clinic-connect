@@ -53,6 +53,7 @@ function BookPage() {
   const doctor = getDoctor(doctorId)!;
 
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [dateOpen, setDateOpen] = useState(false);
   const [time, setTime] = useState<string | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -153,7 +154,7 @@ function BookPage() {
               </h3>
               <span className="text-xs text-muted-foreground">(Fridays closed)</span>
             </div>
-            <Popover>
+            <Popover open={dateOpen} onOpenChange={setDateOpen}>
               <PopoverTrigger asChild>
                 <Button
                   type="button"
@@ -174,6 +175,7 @@ function BookPage() {
                   onSelect={(next) => {
                     setDate(next);
                     setTime(null);
+                    if (next) setDateOpen(false);
                   }}
                   disabled={(d) => isFriday(d) || isPast(d)}
                   className={cn("pointer-events-auto p-3")}
