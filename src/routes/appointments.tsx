@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { format, parseISO } from "date-fns";
-import { CalendarPlus, Clock, Trash2, User } from "lucide-react";
+import { CalendarPlus, Clock, Loader2, Trash2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -50,6 +50,7 @@ function AppointmentsPage() {
   const session = getSession();
   const [items, setItems] = useState<Appointment[]>([]);
   const [pending, setPending] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     if (!session) return;
@@ -63,20 +64,34 @@ function AppointmentsPage() {
   );
 
   const confirmCancel = async () => {
-    if (!pending) return;
+    if (!pending || cancelling) return;
+    const id = pending;
+    setCancelling(true);
     try {
-      await cancelAppointment(pending);
+      await cancelAppointment(id);
       setItems(session ? await getAppointments(session.email) : []);
       setPending(null);
       toast.success("Appointment cancelled");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not cancel appointment");
+    } finally {
+      setCancelling(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <AppHeader />
+      {cancelling && (
+        <div
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-background"
+          role="status"
+          aria-live="polite"
+        >
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Deleting appointment...</p>
+        </div>
+      )}
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-5 sm:py-10">
         <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
