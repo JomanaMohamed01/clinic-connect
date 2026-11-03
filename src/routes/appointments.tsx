@@ -77,10 +77,10 @@ function AppointmentsPage() {
   return (
     <div className="min-h-screen bg-background">
       <AppHeader />
-      <main className="mx-auto max-w-3xl px-5 py-10">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-5 sm:py-10">
+        <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="font-display text-4xl">My appointments</h1>
+            <h1 className="font-display text-3xl sm:text-4xl">My appointments</h1>
             <p className="mt-1 text-muted-foreground">
               {sorted.length
                 ? `You have ${sorted.length} upcoming visit${sorted.length > 1 ? "s" : ""}.`
@@ -89,7 +89,7 @@ function AppointmentsPage() {
           </div>
           <Button
             onClick={() => navigate({ to: "/doctors" })}
-            className="h-11 rounded-full bg-peach-gradient shadow-soft hover:opacity-95"
+            className="h-11 w-full rounded-full bg-peach-gradient shadow-soft hover:opacity-95 sm:w-auto"
           >
             <CalendarPlus className="mr-2 h-4 w-4" />
             Book new
@@ -119,42 +119,50 @@ function AppointmentsPage() {
                 key={a.id}
                 className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-soft"
               >
-                <div className="flex flex-wrap items-start gap-4 p-5">
-                  <div className="flex min-w-[84px] flex-col items-center justify-center rounded-2xl bg-peach-gradient px-4 py-3 text-center text-primary-foreground">
-                    <div className="text-xs uppercase tracking-widest opacity-90">
-                      {format(parseISO(a.date), "MMM")}
+                <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:gap-4 sm:p-5">
+                  <div className="flex min-w-0 flex-1 items-start gap-3 sm:gap-4">
+                    <div className="flex w-[4.5rem] shrink-0 flex-col items-center justify-center rounded-2xl bg-peach-gradient px-2 py-3 text-center text-primary-foreground sm:w-[5.25rem] sm:px-4">
+                      <div className="text-[0.7rem] uppercase tracking-widest opacity-90">
+                        {format(parseISO(a.date), "MMM")}
+                      </div>
+                      <div className="font-display text-3xl leading-none">
+                        {format(parseISO(a.date), "d")}
+                      </div>
+                      <div className="mt-1 text-xs opacity-90">
+                        {format(parseISO(a.date), "EEE")}
+                      </div>
                     </div>
-                    <div className="font-display text-3xl leading-none">
-                      {format(parseISO(a.date), "d")}
-                    </div>
-                    <div className="mt-1 text-xs opacity-90">
-                      {format(parseISO(a.date), "EEE")}
-                    </div>
-                  </div>
 
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-display text-lg leading-tight">{a.doctorName}</h3>
-                    <p className="text-sm text-primary">{a.specialty}</p>
-                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                      <span className="inline-flex items-center gap-1.5">
-                        <Clock className="h-3.5 w-3.5" /> {a.time} · 15 min
-                      </span>
-                      <span className="inline-flex items-center gap-1.5">
-                        <User className="h-3.5 w-3.5" /> {a.firstName} {a.lastName}, {a.age}
-                      </span>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-display text-lg leading-tight">{a.doctorName}</h3>
+                      <p className="text-sm text-primary">{a.specialty}</p>
+                      <div className="mt-2 flex flex-col gap-1 text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:gap-x-4 sm:gap-y-1">
+                        <span className="inline-flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5 shrink-0" />
+                          <span>
+                            {a.time} · 15 min
+                          </span>
+                        </span>
+                        <span className="inline-flex min-w-0 items-center gap-1.5">
+                          <User className="h-3.5 w-3.5 shrink-0" />
+                          <span className="break-words">
+                            {a.firstName} {a.lastName}, {a.age}
+                          </span>
+                        </span>
+                      </div>
+                      {a.notes && (
+                        <p className="mt-2 rounded-xl bg-muted/60 px-3 py-2 text-sm text-muted-foreground">
+                          “{a.notes}”
+                        </p>
+                      )}
                     </div>
-                    {a.notes && (
-                      <p className="mt-2 rounded-xl bg-muted/60 px-3 py-2 text-sm text-muted-foreground">
-                        “{a.notes}”
-                      </p>
-                    )}
                   </div>
 
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setPending(a.id)}
-                    className="rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    className="h-9 shrink-0 self-end rounded-full px-3 text-destructive hover:bg-destructive/10 hover:text-destructive sm:self-start"
                   >
                     <Trash2 className="mr-1.5 h-4 w-4" />
                     Cancel
