@@ -182,7 +182,7 @@ function AppointmentsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel this appointment?</AlertDialogTitle>
             <AlertDialogDescription>
-              This can’t be undone. The time slot will free up for another patient.
+              This can’t be undone, do you want to cancel your appointment?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
