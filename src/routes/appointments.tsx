@@ -146,7 +146,10 @@ function AppointmentsPage() {
                         <span className="inline-flex min-w-0 items-center gap-1.5">
                           <User className="h-3.5 w-3.5 shrink-0" />
                           <span className="break-words">
-                            {a.firstName} {a.lastName}, {a.age}
+                            {a.firstName} {a.lastName},{" "}
+                            <span className="whitespace-nowrap">
+                              {a.age} {a.age === 1 ? "year" : "years"}
+                            </span>
                           </span>
                         </span>
                       </div>
