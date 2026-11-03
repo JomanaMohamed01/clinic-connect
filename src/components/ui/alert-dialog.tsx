@@ -4,7 +4,16 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
-const AlertDialog = AlertDialogPrimitive.Root;
+const AlertDialogDismissContext = React.createContext<(() => void) | null>(null);
+
+const AlertDialog = ({
+  onOpenChange,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) => (
+  <AlertDialogDismissContext.Provider value={() => onOpenChange?.(false)}>
+    <AlertDialogPrimitive.Root onOpenChange={onOpenChange} {...props} />
+  </AlertDialogDismissContext.Provider>
+);
 
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
 
@@ -13,16 +22,23 @@ const AlertDialogPortal = AlertDialogPrimitive.Portal;
 const AlertDialogOverlay = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Overlay
-    className={cn(
-      "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className,
-    )}
-    {...props}
-    ref={ref}
-  />
-));
+>(({ className, onPointerDown, ...props }, ref) => {
+  const dismiss = React.useContext(AlertDialogDismissContext);
+  return (
+    <AlertDialogPrimitive.Overlay
+      className={cn(
+        "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        className,
+      )}
+      {...props}
+      ref={ref}
+      onPointerDown={(event) => {
+        onPointerDown?.(event);
+        if (event.target === event.currentTarget) dismiss?.();
+      }}
+    />
+  );
+});
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 
 const AlertDialogContent = React.forwardRef<
