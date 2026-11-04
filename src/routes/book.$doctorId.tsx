@@ -310,7 +310,7 @@ function BookPage() {
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Anything the doctor should know?"
                 rows={3}
-                className="rounded-xl"
+                className="resize-none rounded-xl"
               />
             </div>
           </section>
