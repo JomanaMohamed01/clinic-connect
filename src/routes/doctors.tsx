@@ -31,10 +31,7 @@ function DoctorsPage() {
       <AppHeader />
       <main className="mx-auto max-w-3xl px-5 py-10">
         <div className="mb-8">
-          <p className="text-sm font-medium uppercase tracking-widest text-primary">
-            Step 1 of 3
-          </p>
-          <h1 className="mt-2 font-display text-4xl">Choose your doctor</h1>
+          <h1 className="font-display text-4xl">Choose your doctor</h1>
           <p className="mt-2 text-muted-foreground">
             Every visit is 15 minutes. Pick the specialist that fits you.
           </p>
