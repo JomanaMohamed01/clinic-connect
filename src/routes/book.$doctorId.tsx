@@ -82,12 +82,15 @@ function BookPage() {
   const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
     const session = getSession();
+    if (!date || !dateStr) return toast.error("Please pick a date");
+    if (!time) return toast.error("Please pick a time");
+    if (!firstName.trim()) return toast.error("Please enter your first name");
+    if (!lastName.trim()) return toast.error("Please enter your last name");
+    if (!age.trim()) return toast.error("Please enter your age");
     if (!session) return navigate({ to: "/auth" });
-    if (!time) return toast.error("Please pick a time.");
-    if (!date || !dateStr) return toast.error("Please pick a date.");
     if (isFriday(date)) return toast.error("Fridays are closed — please pick another day.");
     const ageNum = Number(age);
-    if (!ageNum || ageNum <= 0 || ageNum > 120) return toast.error("Please enter a valid age.");
+    if (!ageNum || ageNum <= 0 || ageNum > 120) return toast.error("Please enter a valid age");
     if (isSlotTaken(doctorId, dateStr, time)) {
       return toast.error("That slot was just taken. Please pick another time.");
     }
@@ -143,7 +146,7 @@ function BookPage() {
           </div>
         </div>
 
-        <form onSubmit={handleConfirm} className="space-y-8">
+        <form onSubmit={handleConfirm} noValidate className="space-y-8">
           {/* Date */}
           <section>
             <div className="mb-3 flex items-center gap-2">
