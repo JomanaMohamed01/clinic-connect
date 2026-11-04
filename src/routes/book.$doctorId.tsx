@@ -58,7 +58,7 @@ function BookPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [age, setAge] = useState("");
-  const [gender, setGender] = useState<"male" | "female" | "other">("female");
+  const [gender, setGender] = useState<"male" | "female">("female");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [, setBookingsTick] = useState(0);
@@ -281,7 +281,7 @@ function BookPage() {
                   onValueChange={(v) => setGender(v as typeof gender)}
                   className="flex gap-2 pt-1"
                 >
-                  {(["female", "male", "other"] as const).map((g) => (
+                  {(["female", "male"] as const).map((g) => (
                     <label
                       key={g}
                       className={cn(

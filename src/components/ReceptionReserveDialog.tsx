@@ -42,7 +42,7 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [age, setAge] = useState("");
-  const [gender, setGender] = useState<"male" | "female" | "other">("female");
+  const [gender, setGender] = useState<"male" | "female">("female");
   const [notes, setNotes] = useState("");
 
   const freeSlots = useMemo(() => {
@@ -306,7 +306,7 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                   onValueChange={(v) => setGender(v as typeof gender)}
                   className="flex gap-2"
                 >
-                  {(["female", "male", "other"] as const).map((g) => (
+                  {(["female", "male"] as const).map((g) => (
                     <label
                       key={g}
                       className={cn(
