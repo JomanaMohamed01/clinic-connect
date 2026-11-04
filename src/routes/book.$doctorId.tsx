@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { ArrowLeft, CalendarIcon, Check, Clock } from "lucide-react";
@@ -50,6 +50,7 @@ export const Route = createFileRoute("/book/$doctorId")({
 function BookPage() {
   const { doctorId } = Route.useParams();
   const navigate = useNavigate();
+  const router = useRouter();
   const doctor = getDoctor(doctorId)!;
 
   const [date, setDate] = useState<Date | undefined>(undefined);
@@ -111,8 +112,10 @@ function BookPage() {
         notes: notes.trim(),
       });
 
-      toast.success("Appointment confirmed!");
-      navigate({ to: "/appointments" });
+      await navigate({ to: "/appointments" });
+      if (router.state.location.pathname === "/appointments") {
+        toast.success("Appointment confirmed!");
+      }
     } catch (err) {
       await refreshDoctorBookings(doctorId);
       setBookingsTick((n) => n + 1);
