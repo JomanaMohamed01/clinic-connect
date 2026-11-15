@@ -27,6 +27,21 @@ export function AppHeader() {
   const session = typeof window !== "undefined" ? getSession() : null;
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [confirmSignOut, setConfirmSignOut] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+
+  const confirmSignOutNow = async () => {
+    setSigningOut(true);
+    try {
+      await signOut();
+      setConfirmSignOut(false);
+      navigate({ to: "/auth" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not sign out.");
+    } finally {
+      setSigningOut(false);
+    }
+  };
 
   const confirmDeleteAccount = async () => {
     setDeleting(true);
@@ -90,9 +105,7 @@ export function AppHeader() {
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer gap-3 rounded-xl px-2.5 py-2.5"
-              onSelect={() => {
-                void signOut().then(() => navigate({ to: "/auth" }));
-              }}
+              onSelect={() => setConfirmSignOut(true)}
             >
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-muted-foreground">
                 <LogOut className="h-4 w-4" />
@@ -112,6 +125,29 @@ export function AppHeader() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <AlertDialog open={confirmSignOut} onOpenChange={(open) => !signingOut && setConfirmSignOut(open)}>
+        <AlertDialogContent className="rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Do you want to sign out?</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-full" disabled={signingOut}>
+              No
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(event) => {
+                event.preventDefault();
+                void confirmSignOutNow();
+              }}
+              disabled={signingOut}
+              className="rounded-full bg-peach-gradient text-primary-foreground shadow-soft hover:opacity-95"
+            >
+              {signingOut ? "Signing out…" : "Yes"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AlertDialog open={confirmDelete} onOpenChange={(open) => !deleting && setConfirmDelete(open)}>
         <AlertDialogContent className="rounded-3xl">
