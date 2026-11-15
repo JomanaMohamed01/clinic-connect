@@ -132,7 +132,10 @@ export function AppHeader() {
             <AlertDialogTitle>Do you want to sign out?</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-full" disabled={signingOut}>
+            <AlertDialogCancel
+              className="rounded-full hover:bg-background hover:text-foreground"
+              disabled={signingOut}
+            >
               No
             </AlertDialogCancel>
             <AlertDialogAction
