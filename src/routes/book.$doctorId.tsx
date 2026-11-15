@@ -268,11 +268,10 @@ function BookPage() {
                 </Label>
                 <Input
                   id="age"
-                  type="number"
-                  min={1}
-                  max={120}
+                  inputMode="numeric"
+                  autoComplete="off"
                   value={age}
-                  onChange={(e) => setAge(e.target.value)}
+                  onChange={(e) => setAge(e.target.value.replace(/\D/g, ""))}
                   required
                   className="h-11 rounded-xl"
                 />
