@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
@@ -28,11 +28,15 @@ export const Route = createFileRoute("/doctors")({
 });
 
 function DoctorsPage() {
-  useLayoutEffect(() => {
+  useEffect(() => {
     const name = sessionStorage.getItem("bloom-welcome-name");
     if (!name) return;
     sessionStorage.removeItem("bloom-welcome-name");
-    toast.success(`Welcome back, ${name}`);
+    // Wait until the page and the toast area are both on screen.
+    const id = window.setTimeout(() => {
+      toast.success(`Welcome back, ${name}`);
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   return (
