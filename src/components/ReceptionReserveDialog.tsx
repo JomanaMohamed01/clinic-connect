@@ -34,7 +34,8 @@ type Props = {
 
 export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) {
   const [doctorId, setDoctorId] = useState("");
-  const [date, setDate] = useState<Date | undefined>(() => new Date());
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [dateOpen, setDateOpen] = useState(false);
   const [time, setTime] = useState<string | null>(null);
   const [bookedIsos, setBookedIsos] = useState<Set<string>>(new Set());
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -53,7 +54,8 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
   useEffect(() => {
     if (!open) {
       setDoctorId("");
-      setDate(new Date());
+      setDate(undefined);
+      setDateOpen(false);
       setTime(null);
       setFirstName("");
       setLastName("");
@@ -61,10 +63,7 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
       setGender("female");
       setNotes("");
       setBookedIsos(new Set());
-      return;
     }
-    setDate(new Date());
-    setTime(null);
   }, [open]);
 
   useEffect(() => {
@@ -83,9 +82,7 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
 
   useEffect(() => {
     if (time && !freeSlots.some((s) => s.time === time)) {
-      setTime(freeSlots[0]?.time ?? null);
-    } else if (!time && freeSlots[0]) {
-      setTime(freeSlots[0].time);
+      setTime(null);
     }
   }, [freeSlots, time]);
 
@@ -152,7 +149,10 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                   key={d.id}
                   type="button"
                   onClick={() => {
+                    if (d.id === doctorId) return;
                     setDoctorId(d.id);
+                    setDate(undefined);
+                    setDateOpen(false);
                     setTime(null);
                   }}
                   className={cn(
@@ -186,7 +186,7 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                     <span className="text-red-600" aria-hidden="true"> *</span>
                   </Label>
                 </div>
-                <Popover>
+                <Popover open={dateOpen} onOpenChange={setDateOpen}>
                   <PopoverTrigger asChild>
                     <Button
                       type="button"
@@ -204,13 +204,18 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                     <Calendar
                       mode="single"
                       selected={date}
-                      onSelect={setDate}
+                      onSelect={(next) => {
+                        setDate(next);
+                        setTime(null);
+                        if (next) setDateOpen(false);
+                      }}
                       disabled={(d) => d.getDay() === 5 || isPast(d)}
                     />
                   </PopoverContent>
                 </Popover>
               </section>
 
+              {date && (
               <section>
                 <div className="mb-2 flex items-center gap-2">
                   <Clock className="h-4 w-4 text-primary" />
@@ -246,6 +251,7 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                   </div>
                 )}
               </section>
+              )}
             </>
           )}
 
