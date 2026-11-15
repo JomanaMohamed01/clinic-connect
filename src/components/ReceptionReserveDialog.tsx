@@ -18,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { formatSlotLabel } from "@/lib/format-time";
 import {
   DOCTORS,
   buildSlotStartIso,
@@ -248,7 +249,7 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                             : "bg-card hover:border-primary/40",
                         )}
                       >
-                        {s.time}
+                        {formatSlotLabel(s.time)}
                       </button>
                     ))}
                   </div>

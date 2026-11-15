@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
+import { formatSlotLabel } from "@/lib/format-time";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
 import {
@@ -220,7 +221,7 @@ function BookPage() {
                         taken && "cursor-not-allowed opacity-40 line-through",
                       )}
                     >
-                      {s}
+                      {formatSlotLabel(s)}
                     </button>
                   );
                 })}

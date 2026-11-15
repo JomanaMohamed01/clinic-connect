@@ -23,6 +23,7 @@ import {
   getSession,
 } from "@/lib/clinic-storage";
 import { isReceptionStaff } from "@/lib/reception-api";
+import { formatSlotLabel } from "@/lib/format-time";
 
 export const Route = createFileRoute("/appointments")({
   head: () => ({
@@ -155,7 +156,7 @@ function AppointmentsPage() {
                         <span className="inline-flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5 shrink-0" />
                           <span>
-                            {a.time} · 15 min
+                            {formatSlotLabel(a.time)} · 15 min
                           </span>
                         </span>
                         <span className="inline-flex min-w-0 items-center gap-1.5">
