@@ -208,8 +208,8 @@ function AuthPage() {
         return;
       }
 
-      await signIn(trimmedEmail, password);
-      toast.success("Welcome back!");
+      const user = await signIn(trimmedEmail, password);
+      toast.success(`Welcome back, ${user.name.split(" ")[0]}`);
       navigate({ to: "/doctors" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
