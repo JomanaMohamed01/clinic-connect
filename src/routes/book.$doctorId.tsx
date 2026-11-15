@@ -240,7 +240,7 @@ function BookPage() {
                 <Input
                   id="fn"
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => setFirstName(e.target.value.replace(/\d/g, ""))}
                   required
                   className="h-11 rounded-xl"
                 />
@@ -253,7 +253,7 @@ function BookPage() {
                 <Input
                   id="ln"
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => setLastName(e.target.value.replace(/\d/g, ""))}
                   required
                   className="h-11 rounded-xl"
                 />
