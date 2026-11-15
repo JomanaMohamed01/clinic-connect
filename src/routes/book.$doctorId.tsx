@@ -88,7 +88,7 @@ function BookPage() {
     if (!firstName.trim()) return toast.error("Please enter your first name");
     if (!lastName.trim()) return toast.error("Please enter your last name");
     if (!age.trim()) return toast.error("Please enter your age");
-    if (!gender) return toast.error("Please choose a gender");
+    if (!gender) return toast.error("Please choose your gender");
     if (!session) return navigate({ to: "/auth" });
     if (isFriday(date)) return toast.error("Fridays are closed — please pick another day.");
     const ageNum = Number(age);
