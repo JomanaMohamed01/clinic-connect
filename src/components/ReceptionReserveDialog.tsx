@@ -99,6 +99,9 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
     if (!date) return toast.error("Select a date.");
     if (isFriday) return toast.error("Fridays are closed.");
     if (!time) return toast.error("Pick an available time.");
+    if (!firstName.trim()) return toast.error("Enter a first name.");
+    if (!lastName.trim()) return toast.error("Enter a last name.");
+    if (!age.trim()) return toast.error("Enter an age.");
     const ageNum = Number(age);
     if (!ageNum || ageNum <= 0 || ageNum > 150) return toast.error("Enter a valid age.");
 
@@ -137,7 +140,7 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form noValidate onSubmit={handleSubmit} className="space-y-5">
           <section>
             <Label className="mb-2 block">
               Doctor
@@ -267,7 +270,6 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                   id="r-fn"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  required
                   className="h-10 rounded-xl"
                 />
               </div>
@@ -280,7 +282,6 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                   id="r-ln"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  required
                   className="h-10 rounded-xl"
                 />
               </div>
@@ -298,7 +299,6 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                   max={150}
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
-                  required
                   className="h-10 rounded-xl"
                 />
               </div>
