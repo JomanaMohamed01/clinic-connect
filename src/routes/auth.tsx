@@ -284,7 +284,6 @@ function AuthPage() {
                   }}
                   onFocus={unlockAutofill}
                   readOnly={!autofillReady}
-                  placeholder="you@email.com"
                   autoComplete="off"
                   aria-invalid={fieldErrors.email || undefined}
                   className={cn("h-11 rounded-xl", fieldErrors.email && errorInputClass)}
@@ -312,7 +311,6 @@ function AuthPage() {
                     }}
                     onFocus={unlockAutofill}
                     readOnly={!autofillReady}
-                    placeholder="••••••••"
                     className={cn(
                       "h-11 rounded-xl pr-11",
                       fieldErrors.password && errorInputClass,
