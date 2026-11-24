@@ -369,10 +369,6 @@ function AuthPage() {
               </Button>
             </form>
           </Tabs>
-
-          <p className="mt-5 text-center text-xs text-muted-foreground">
-            Your appointments are saved securely to your clinic account.
-          </p>
         </div>
       </div>
     </div>
