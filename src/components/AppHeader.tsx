@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Stethoscope } from "lucide-react";
+import { Menu, Stethoscope, X } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -23,6 +24,9 @@ export function AppHeader() {
   const [deleting, setDeleting] = useState(false);
   const [confirmSignOut, setConfirmSignOut] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuMounted, setMenuMounted] = useState(false);
+  const [drawerIn, setDrawerIn] = useState(false);
 
   const confirmSignOutNow = async () => {
     setSigningOut(true);
@@ -51,6 +55,48 @@ export function AppHeader() {
     }
   };
 
+  useEffect(() => {
+    if (menuOpen) {
+      setMenuMounted(true);
+      return;
+    }
+    if (!menuMounted) return;
+    const id = window.setTimeout(() => setMenuMounted(false), 280);
+    return () => window.clearTimeout(id);
+  }, [menuOpen, menuMounted]);
+
+  useEffect(() => {
+    if (!menuMounted || !menuOpen) {
+      setDrawerIn(false);
+      return;
+    }
+    const id = window.requestAnimationFrame(() => setDrawerIn(true));
+    return () => window.cancelAnimationFrame(id);
+  }, [menuMounted, menuOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    const onResize = () => {
+      if (window.innerWidth > 640) setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onResize);
+    return () => {
+      document.body.style.overflow = previous;
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [menuOpen]);
+
   if (pathname === "/" || pathname === "/auth") return null;
 
   const homeActive = pathname === "/doctors" || pathname.startsWith("/book");
@@ -73,7 +119,7 @@ export function AppHeader() {
           </div>
         </Link>
 
-        <nav className="ml-auto flex flex-wrap items-center gap-1">
+        <nav className="ml-auto hidden min-[641px]:flex flex-wrap items-center gap-1">
           <Link
             to="/doctors"
             className={cn(itemClass, homeActive && "bg-accent text-foreground")}
@@ -97,7 +143,93 @@ export function AppHeader() {
             Delete account
           </button>
         </nav>
+
+        <button
+          type="button"
+          className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl min-[641px]:hidden"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+        >
+          <Menu className="size-[26px] text-[#4E382E]" />
+        </button>
       </div>
+
+      {menuMounted
+        ? createPortal(
+        <div className="fixed inset-0 z-[1100]">
+          <button
+            type="button"
+            className={cn(
+              "absolute inset-0 bg-[rgba(40,24,18,0.45)] transition-opacity duration-[280ms]",
+              drawerIn ? "opacity-100" : "opacity-0",
+            )}
+            aria-label="Close menu"
+            onClick={() => setMenuOpen(false)}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+            className={cn(
+              "absolute top-0 right-0 bottom-0 w-[300px] bg-[#4E382E] px-7 pt-[18px] pb-7 shadow-[-8px_0_18px_rgba(42,26,20,0.28)] transition-transform duration-[280ms] ease-out",
+              drawerIn ? "translate-x-0" : "translate-x-full",
+            )}
+          >
+            <div className="mb-7 flex justify-end">
+              <button
+                type="button"
+                className="flex h-10 w-10 items-center justify-center"
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                <X className="size-[26px] text-[#FFF8F4]" />
+              </button>
+            </div>
+            <button
+              type="button"
+              className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
+              onClick={() => {
+                setMenuOpen(false);
+                navigate({ to: "/doctors" });
+              }}
+            >
+              Home
+            </button>
+            <button
+              type="button"
+              className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
+              onClick={() => {
+                setMenuOpen(false);
+                navigate({ to: "/appointments" });
+              }}
+            >
+              My visits
+            </button>
+            <button
+              type="button"
+              className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
+              onClick={() => {
+                setMenuOpen(false);
+                setConfirmSignOut(true);
+              }}
+            >
+              Sign out
+            </button>
+            <button
+              type="button"
+              className="w-full py-5 text-left font-sans text-[22px] font-semibold text-[#F3B2A8]"
+              onClick={() => {
+                setMenuOpen(false);
+                setConfirmDelete(true);
+              }}
+            >
+              Delete account
+            </button>
+          </div>
+        </div>,
+        document.body,
+      )
+        : null}
 
       <AlertDialog open={confirmSignOut} onOpenChange={(open) => !signingOut && setConfirmSignOut(open)}>
         <AlertDialogContent className="rounded-3xl">
