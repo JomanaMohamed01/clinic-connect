@@ -120,7 +120,7 @@ function AppointmentsPage() {
             </div>
             <h3 className="font-display text-xl">Nothing booked yet</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Reserve your first 15-minute visit with one of our doctors.
+              Reserve your first 30-minute visit with one of our doctors.
             </p>
             <Link
               to="/doctors"
@@ -157,7 +157,7 @@ function AppointmentsPage() {
                         <span className="inline-flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5 shrink-0" />
                           <span>
-                            {formatSlotLabel(a.time)} · 15 min
+                            {formatSlotLabel(a.time)} · 30 min
                           </span>
                         </span>
                         <span className="inline-flex min-w-0 items-center gap-1.5">

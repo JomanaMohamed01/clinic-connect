@@ -17,9 +17,9 @@ export function formatSlotLabel(time: string): string {
   return formatTime12h(slot);
 }
 
-const VISIT_MINUTES = 15;
+const VISIT_MINUTES = 30;
 
-/** A visit is past once its 15-minute slot has ended. */
+/** A visit is past once its 30-minute slot has ended. */
 export function isPastVisit(dateKey: string, time: string, now = new Date()): boolean {
   const [year, month, day] = dateKey.split("-").map(Number);
   const [hours, minutes] = time.split(":").map(Number);

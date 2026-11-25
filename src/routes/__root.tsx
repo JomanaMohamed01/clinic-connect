@@ -83,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Book 15-minute appointments with Bloom Clinic doctors in a few taps. Warm, friendly, and simple.",
+          "Book 30-minute appointments with Bloom Clinic doctors in a few taps. Warm, friendly, and simple.",
       },
       { property: "og:title", content: "Bloom Clinic" },
       {

@@ -35,7 +35,7 @@ export const DOCTOR_HOURS: Record<string, { startHour: number; endHour: number }
   "44444444-4444-4444-4444-444444444444": { startHour: 12, endHour: 20 },
 };
 
-export const SLOT_MINUTES = 15;
+export const SLOT_MINUTES = 30;
 export const MAX_UPCOMING_APPOINTMENTS = 3;
 
 export const DOCTORS: Doctor[] = [

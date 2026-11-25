@@ -9,7 +9,7 @@ export const Route = createFileRoute("/doctors")({
   head: () => ({
     meta: [
       { title: "Choose your doctor — Bloom Clinic" },
-      { name: "description", content: "Pick a doctor to book a 15-minute appointment at Bloom Clinic." },
+      { name: "description", content: "Pick a doctor to book a 30-minute appointment at Bloom Clinic." },
     ],
   }),
   beforeLoad: async () => {

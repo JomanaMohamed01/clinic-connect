@@ -94,7 +94,7 @@ function PastVisitsPage() {
                     <div className="mt-2 flex flex-col gap-1 text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:gap-x-4 sm:gap-y-1">
                       <span className="inline-flex items-center gap-1.5">
                         <Clock className="h-3.5 w-3.5 shrink-0" />
-                        <span>{formatSlotLabel(a.time)} · 15 min</span>
+                        <span>{formatSlotLabel(a.time)} · 30 min</span>
                       </span>
                       <span className="inline-flex min-w-0 items-center gap-1.5">
                         <User className="h-3.5 w-3.5 shrink-0" />
