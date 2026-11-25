@@ -213,7 +213,7 @@ function BookPage() {
                   Pick a time
                   <span className="text-red-600" aria-hidden="true"> *</span>
                 </h3>
-                <span className="text-xs text-muted-foreground">(30 min each)</span>
+                <span className="text-xs text-muted-foreground">(15 min each)</span>
               </div>
               <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
                 {slots.map((s) => {
