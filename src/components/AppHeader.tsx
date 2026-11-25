@@ -86,7 +86,7 @@ export function AppHeader() {
       if (event.key === "Escape") setMenuOpen(false);
     };
     const onResize = () => {
-      if (window.innerWidth > 640) setMenuOpen(false);
+      if (window.innerWidth > 695) setMenuOpen(false);
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("resize", onResize);
@@ -120,7 +120,7 @@ export function AppHeader() {
           </div>
         </Link>
 
-        <nav className="ml-auto hidden min-[641px]:flex flex-wrap items-center gap-1">
+        <nav className="ml-auto hidden min-[696px]:flex flex-wrap items-center gap-1">
           <Link
             to="/doctors"
             className={cn(itemClass, homeActive && "bg-accent text-foreground")}
@@ -153,7 +153,7 @@ export function AppHeader() {
 
         <button
           type="button"
-          className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl min-[641px]:hidden"
+          className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl min-[696px]:hidden"
           onClick={() => setMenuOpen((open) => !open)}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
         >
