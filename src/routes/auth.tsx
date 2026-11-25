@@ -260,7 +260,6 @@ function AuthPage() {
                     }}
                     onFocus={unlockAutofill}
                     readOnly={!autofillReady}
-                    placeholder="Sara Ahmed"
                     autoComplete="off"
                     aria-invalid={fieldErrors.name || undefined}
                     className={cn("h-11 rounded-xl", fieldErrors.name && errorInputClass)}
