@@ -213,10 +213,10 @@ function AuthPage() {
       }
 
       const user = await signIn(trimmedEmail, password);
-      sessionStorage.setItem("bloom-welcome-name", user.name.split(" ")[0]);
+      const firstName = user.name.trim().split(/\s+/)[0];
       await navigate({ to: "/doctors" });
-      if (window.location.pathname !== "/doctors") {
-        sessionStorage.removeItem("bloom-welcome-name");
+      if (window.location.pathname === "/doctors") {
+        toast.success(firstName ? `Welcome back, ${firstName}!` : "Welcome back!");
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
