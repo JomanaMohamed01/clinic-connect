@@ -131,13 +131,13 @@ export function AppHeader() {
             to="/appointments"
             className={cn(itemClass, visitsActive && "bg-accent text-foreground")}
           >
-            My visits
+            My appointments
           </Link>
           <Link
             to="/past-visits"
             className={cn(itemClass, pastActive && "bg-accent text-foreground")}
           >
-            Past visits
+            Past appointments
           </Link>
           <button type="button" className={itemClass} onClick={() => setConfirmSignOut(true)}>
             Sign out
@@ -163,89 +163,89 @@ export function AppHeader() {
 
       {menuMounted
         ? createPortal(
-        <div className="fixed inset-0 z-[1100]">
-          <button
-            type="button"
-            className={cn(
-              "absolute inset-0 bg-[rgba(40,24,18,0.45)] transition-opacity duration-[280ms]",
-              drawerIn ? "opacity-100" : "opacity-0",
-            )}
-            aria-label="Close menu"
-            onClick={() => setMenuOpen(false)}
-          />
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menu"
-            className={cn(
-              "absolute top-0 right-0 bottom-0 w-[300px] bg-[#4E382E] px-7 pt-[18px] pb-7 shadow-[-8px_0_18px_rgba(42,26,20,0.28)] transition-transform duration-[280ms] ease-out",
-              drawerIn ? "translate-x-0" : "translate-x-full",
-            )}
-          >
-            <div className="mb-7 flex justify-end">
+          <div className="fixed inset-0 z-[1100]">
+            <button
+              type="button"
+              className={cn(
+                "absolute inset-0 bg-[rgba(40,24,18,0.45)] transition-opacity duration-[280ms]",
+                drawerIn ? "opacity-100" : "opacity-0",
+              )}
+              aria-label="Close menu"
+              onClick={() => setMenuOpen(false)}
+            />
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menu"
+              className={cn(
+                "absolute top-0 right-0 bottom-0 w-[300px] bg-[#4E382E] px-7 pt-[18px] pb-7 shadow-[-8px_0_18px_rgba(42,26,20,0.28)] transition-transform duration-[280ms] ease-out",
+                drawerIn ? "translate-x-0" : "translate-x-full",
+              )}
+            >
+              <div className="mb-7 flex justify-end">
+                <button
+                  type="button"
+                  className="flex h-10 w-10 items-center justify-center"
+                  onClick={() => setMenuOpen(false)}
+                  aria-label="Close menu"
+                >
+                  <X className="size-[26px] text-[#FFF8F4]" />
+                </button>
+              </div>
               <button
                 type="button"
-                className="flex h-10 w-10 items-center justify-center"
-                onClick={() => setMenuOpen(false)}
-                aria-label="Close menu"
+                className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate({ to: "/doctors" });
+                }}
               >
-                <X className="size-[26px] text-[#FFF8F4]" />
+                Home
+              </button>
+              <button
+                type="button"
+                className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate({ to: "/appointments" });
+                }}
+              >
+                My appointments
+              </button>
+              <button
+                type="button"
+                className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate({ to: "/past-visits" });
+                }}
+              >
+                Past appointments
+              </button>
+              <button
+                type="button"
+                className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setConfirmSignOut(true);
+                }}
+              >
+                Sign out
+              </button>
+              <button
+                type="button"
+                className="w-full py-5 text-left font-sans text-[22px] font-semibold text-[#F3B2A8]"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setConfirmDelete(true);
+                }}
+              >
+                Delete account
               </button>
             </div>
-            <button
-              type="button"
-              className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
-              onClick={() => {
-                setMenuOpen(false);
-                navigate({ to: "/doctors" });
-              }}
-            >
-              Home
-            </button>
-            <button
-              type="button"
-              className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
-              onClick={() => {
-                setMenuOpen(false);
-                navigate({ to: "/appointments" });
-              }}
-            >
-              My visits
-            </button>
-            <button
-              type="button"
-              className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
-              onClick={() => {
-                setMenuOpen(false);
-                navigate({ to: "/past-visits" });
-              }}
-            >
-              Past visits
-            </button>
-            <button
-              type="button"
-              className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
-              onClick={() => {
-                setMenuOpen(false);
-                setConfirmSignOut(true);
-              }}
-            >
-              Sign out
-            </button>
-            <button
-              type="button"
-              className="w-full py-5 text-left font-sans text-[22px] font-semibold text-[#F3B2A8]"
-              onClick={() => {
-                setMenuOpen(false);
-                setConfirmDelete(true);
-              }}
-            >
-              Delete account
-            </button>
-          </div>
-        </div>,
-        document.body,
-      )
+          </div>,
+          document.body,
+        )
         : null}
 
       <AlertDialog open={confirmSignOut} onOpenChange={(open) => !signingOut && setConfirmSignOut(open)}>

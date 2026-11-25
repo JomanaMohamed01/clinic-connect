@@ -17,8 +17,8 @@ import { isReceptionStaff } from "@/lib/reception-api";
 export const Route = createFileRoute("/past-visits")({
   head: () => ({
     meta: [
-      { title: "Past visits — Bloom Clinic" },
-      { name: "description", content: "See the clinic visits you have already completed." },
+      { title: "Past appointments — Bloom Clinic" },
+      { name: "description", content: "See the clinic appointments you have already completed." },
     ],
   }),
   beforeLoad: async () => {
@@ -43,7 +43,7 @@ function PastVisitsPage() {
     if (!session) return;
     void getAppointments(session.email)
       .then(setItems)
-      .catch((err) => toast.error(err instanceof Error ? err.message : "Failed to load past visits"));
+      .catch((err) => toast.error(err instanceof Error ? err.message : "Failed to load past appointments"));
   }, [session?.email]);
 
   const sorted = items
@@ -55,7 +55,7 @@ function PastVisitsPage() {
       <AppHeader />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:px-5 sm:py-10">
         <div className="mb-6 sm:mb-8">
-          <h1 className="font-display text-3xl sm:text-4xl">Past visits</h1>
+          <h1 className="font-display text-3xl sm:text-4xl">Past appointments</h1>
         </div>
 
         {sorted.length === 0 ? (
@@ -63,9 +63,9 @@ function PastVisitsPage() {
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent">
               <History className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="font-display text-xl">No past visits yet</h3>
+            <h3 className="font-display text-xl">No past appointments yet</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Visits show up here after their appointment time has passed.
+              Appointments show up here after their time has passed.
             </p>
           </div>
         ) : (
