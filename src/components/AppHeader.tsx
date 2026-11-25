@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { Calendar, House, LogOut, Stethoscope, UserX } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Stethoscope } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -12,14 +12,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { deleteAccount, getSession, signOut } from "@/lib/clinic-storage";
+import { cn } from "@/lib/utils";
 
 export function AppHeader() {
   const navigate = useNavigate();
@@ -59,71 +53,50 @@ export function AppHeader() {
 
   if (pathname === "/" || pathname === "/auth") return null;
 
+  const homeActive = pathname === "/doctors" || pathname.startsWith("/book");
+  const visitsActive = pathname === "/appointments";
+  const itemClass =
+    "inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground";
+
   return (
     <header className="sticky top-0 z-20 border-b border-border/60 bg-background/80 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-5xl items-center px-5">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              className="flex items-center gap-2 text-left outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0"
-              aria-label="Open clinic menu"
-            >
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-peach-gradient text-primary-foreground shadow-soft">
-                <Stethoscope className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="font-display text-lg leading-none">Bloom Clinic</div>
-                {session && (
-                  <div className="text-xs text-muted-foreground">Hi, {session.name.split(" ")[0]}</div>
-                )}
-              </div>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="start"
-            sideOffset={8}
-            className="w-56 rounded-2xl border-border/70 p-2 shadow-card"
+      <div className="mx-auto flex min-h-16 max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-5 py-2">
+        <Link to="/doctors" className="flex items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-peach-gradient text-primary-foreground shadow-soft">
+            <Stethoscope className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="font-display text-lg leading-none">Bloom Clinic</div>
+            {session && (
+              <div className="text-xs text-muted-foreground">Hi, {session.name.split(" ")[0]}</div>
+            )}
+          </div>
+        </Link>
+
+        <nav className="ml-auto flex flex-wrap items-center gap-1">
+          <Link
+            to="/doctors"
+            className={cn(itemClass, homeActive && "bg-accent text-foreground")}
           >
-            <DropdownMenuItem
-              className="cursor-pointer gap-3 rounded-xl px-2.5 py-2.5"
-              onSelect={() => navigate({ to: "/doctors" })}
-            >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary">
-                <House className="h-4 w-4" />
-              </span>
-              Home
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer gap-3 rounded-xl px-2.5 py-2.5"
-              onSelect={() => navigate({ to: "/appointments" })}
-            >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary">
-                <Calendar className="h-4 w-4" />
-              </span>
-              My visits
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer gap-3 rounded-xl px-2.5 py-2.5"
-              onSelect={() => setConfirmSignOut(true)}
-            >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                <LogOut className="h-4 w-4" />
-              </span>
-              Sign out
-            </DropdownMenuItem>
-            <DropdownMenuSeparator className="bg-border/70" />
-            <DropdownMenuItem
-              className="cursor-pointer gap-3 rounded-xl px-2.5 py-2.5 text-destructive focus:text-destructive"
-              onSelect={() => setConfirmDelete(true)}
-            >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
-                <UserX className="h-4 w-4" />
-              </span>
-              Delete account
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            Home
+          </Link>
+          <Link
+            to="/appointments"
+            className={cn(itemClass, visitsActive && "bg-accent text-foreground")}
+          >
+            My visits
+          </Link>
+          <button type="button" className={itemClass} onClick={() => setConfirmSignOut(true)}>
+            Sign out
+          </button>
+          <button
+            type="button"
+            className={cn(itemClass, "text-destructive hover:bg-destructive/10 hover:text-destructive")}
+            onClick={() => setConfirmDelete(true)}
+          >
+            Delete account
+          </button>
+        </nav>
       </div>
 
       <AlertDialog open={confirmSignOut} onOpenChange={(open) => !signingOut && setConfirmSignOut(open)}>
