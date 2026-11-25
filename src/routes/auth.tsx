@@ -298,7 +298,13 @@ function AuthPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="password">Password</Label>
-                <div className="relative">
+                <div
+                  className={cn(
+                    "relative rounded-xl border border-input bg-transparent shadow-sm focus-within:ring-1 focus-within:ring-ring",
+                    mode === "signup" && "mb-3",
+                    fieldErrors.password && "border-destructive focus-within:ring-destructive",
+                  )}
+                >
                   <Input
                     id="password"
                     name="bloom-password"
@@ -310,10 +316,7 @@ function AuthPage() {
                     }}
                     onFocus={unlockAutofill}
                     readOnly={!autofillReady}
-                    className={cn(
-                      "h-11 rounded-xl pr-11",
-                      fieldErrors.password && errorInputClass,
-                    )}
+                    className="h-11 appearance-none rounded-xl border-0 bg-transparent pr-11 shadow-none focus-visible:ring-0"
                     autoComplete="off"
                     aria-invalid={fieldErrors.password || undefined}
                   />
