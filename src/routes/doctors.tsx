@@ -33,7 +33,7 @@ function DoctorsPage() {
         <div className="mb-8">
           <h1 className="font-display text-4xl">Choose your doctor</h1>
           <p className="mt-2 text-muted-foreground">
-            Every visit is 15 minutes. Pick the specialist that fits you.
+            Pick the specialist that fits you.
           </p>
         </div>
 
