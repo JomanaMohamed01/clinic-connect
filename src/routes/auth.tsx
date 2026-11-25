@@ -4,7 +4,7 @@ import { Eye, EyeOff, Heart, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ensureAuthReady, getSession, signIn, signUp } from "@/lib/clinic-storage";
 import {
@@ -117,6 +117,7 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [fadeForm, setFadeForm] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -155,7 +156,10 @@ function AuthPage() {
   };
 
   const handleModeChange = (value: string) => {
-    setMode(value as typeof mode);
+    const next = value as "signin" | "signup";
+    if (next === mode) return;
+    setFadeForm(true);
+    setMode(next);
     setFieldErrors({});
   };
 
@@ -246,8 +250,14 @@ function AuthPage() {
               <TabsTrigger value="signup" className="rounded-full">Sign up</TabsTrigger>
             </TabsList>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4" autoComplete="off" noValidate>
-              <TabsContent value="signup" className="mt-0 space-y-4">
+            <form
+              key={mode}
+              onSubmit={handleSubmit}
+              className={cn("mt-6 space-y-4", fadeForm && "motion-safe:animate-auth-fade")}
+              autoComplete="off"
+              noValidate
+            >
+              {mode === "signup" && (
                 <div className="space-y-1.5">
                   <Label htmlFor="name">Full name</Label>
                   <Input
@@ -268,7 +278,7 @@ function AuthPage() {
                     <p className="text-xs text-destructive">{EMPTY_FIELD_MESSAGE}</p>
                   )}
                 </div>
-              </TabsContent>
+              )}
 
               <div className="space-y-1.5">
                 <Label htmlFor="email">Email</Label>
