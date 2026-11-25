@@ -104,7 +104,9 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
     if (!lastName.trim()) return toast.error("Enter a last name.");
     if (!age.trim()) return toast.error("Enter an age.");
     const ageNum = Number(age);
-    if (!ageNum || ageNum <= 0 || ageNum > 150) return toast.error("Enter a valid age.");
+    if (!Number.isInteger(ageNum) || ageNum < 0 || ageNum > 100) {
+      return toast.error("Please enter a valid age");
+    }
 
     setSubmitting(true);
     try {
@@ -296,8 +298,8 @@ export function ReceptionReserveDialog({ open, onOpenChange, onBooked }: Props) 
                 <Input
                   id="r-age"
                   type="number"
-                  min={1}
-                  max={150}
+                  min={0}
+                  max={100}
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
                   className="h-10 rounded-xl"

@@ -90,11 +90,13 @@ function BookPage() {
     if (!firstName.trim()) return toast.error("Please enter your first name");
     if (!lastName.trim()) return toast.error("Please enter your last name");
     if (!age.trim()) return toast.error("Please enter your age");
+    const ageNum = Number(age);
+    if (!Number.isInteger(ageNum) || ageNum < 0 || ageNum > 100) {
+      return toast.error("Please enter a valid age");
+    }
     if (!gender) return toast.error("Please choose your gender");
     if (!session) return navigate({ to: "/auth" });
     if (isFriday(date)) return toast.error("Fridays are closed — please pick another day.");
-    const ageNum = Number(age);
-    if (!ageNum || ageNum <= 0 || ageNum > 120) return toast.error("Please enter a valid age");
     if (isSlotTaken(doctorId, dateStr, time)) {
       return toast.error("That slot was just taken. Please pick another time.");
     }
