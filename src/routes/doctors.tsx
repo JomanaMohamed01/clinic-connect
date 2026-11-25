@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { Baby, ChevronRight, HeartPulse, ScanFace, Stethoscope, type LucideIcon } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { DOCTORS, ensureAuthReady, getSession } from "@/lib/clinic-storage";
 import { isReceptionStaff } from "@/lib/reception-api";
@@ -25,6 +25,13 @@ export const Route = createFileRoute("/doctors")({
   component: DoctorsPage,
 });
 
+const specialtyIcons: Record<string, LucideIcon> = {
+  "General Medicine": Stethoscope,
+  Dermatology: ScanFace,
+  Pediatrics: Baby,
+  Cardiology: HeartPulse,
+};
+
 function DoctorsPage() {
   return (
     <div className="min-h-screen bg-background">
@@ -38,8 +45,10 @@ function DoctorsPage() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {DOCTORS.map((d) => (
-            <Link
+          {DOCTORS.map((d) => {
+            const Icon = specialtyIcons[d.specialty] ?? Stethoscope;
+            return (
+              <Link
               key={d.id}
               to="/book/$doctorId"
               params={{ doctorId: d.id }}
@@ -47,9 +56,9 @@ function DoctorsPage() {
             >
               <div className="flex items-start gap-4">
                 <div
-                  className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl font-display text-lg text-primary-foreground shadow-soft ${d.color}`}
+                  className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-primary-foreground shadow-soft ${d.color}`}
                 >
-                  {d.initials}
+                  <Icon className="h-7 w-7" aria-hidden="true" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="font-display text-lg leading-tight">{d.name}</h3>
@@ -58,8 +67,9 @@ function DoctorsPage() {
                 </div>
                 <ChevronRight className="mt-1 h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
               </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </main>
     </div>

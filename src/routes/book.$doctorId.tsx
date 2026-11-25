@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
-import { ArrowLeft, CalendarIcon, Check, Clock } from "lucide-react";
+import { ArrowLeft, Baby, CalendarIcon, Check, Clock, HeartPulse, ScanFace, Stethoscope, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -141,9 +141,18 @@ function BookPage() {
         {/* Doctor header */}
         <div className="mb-8 flex items-center gap-4 rounded-3xl border border-border/60 bg-card p-5 shadow-soft">
           <div
-            className={`flex h-14 w-14 items-center justify-center rounded-2xl font-display text-lg text-primary-foreground ${doctor.color}`}
+            className={`flex h-14 w-14 items-center justify-center rounded-2xl text-primary-foreground ${doctor.color}`}
           >
-            {doctor.initials}
+            {(() => {
+              const icons: Record<string, LucideIcon> = {
+                "General Medicine": Stethoscope,
+                Dermatology: ScanFace,
+                Pediatrics: Baby,
+                Cardiology: HeartPulse,
+              };
+              const Icon = icons[doctor.specialty] ?? Stethoscope;
+              return <Icon className="h-7 w-7" aria-hidden="true" />;
+            })()}
           </div>
           <div>
             <h2 className="font-display text-xl">{doctor.name}</h2>
