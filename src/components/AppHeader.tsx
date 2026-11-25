@@ -99,7 +99,8 @@ export function AppHeader() {
 
   if (pathname === "/" || pathname === "/auth") return null;
 
-  const homeActive = pathname === "/doctors" || pathname.startsWith("/book");
+  const homeActive =
+    pathname === "/doctors" || pathname.startsWith("/doctors/") || pathname.startsWith("/book");
   const visitsActive = pathname === "/appointments";
   const pastActive = pathname === "/past-visits";
   const itemClass =

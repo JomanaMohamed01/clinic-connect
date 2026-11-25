@@ -126,7 +126,7 @@ function AppointmentsPage() {
               to="/doctors"
               className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-peach-gradient px-6 text-sm font-medium text-primary-foreground shadow-soft"
             >
-              Choose a doctor
+              Choose a specialization
             </Link>
           </div>
         ) : (

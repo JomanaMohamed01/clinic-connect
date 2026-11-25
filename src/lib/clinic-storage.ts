@@ -42,7 +42,7 @@ export const DOCTORS: Doctor[] = [
   {
     id: "11111111-1111-1111-1111-111111111111",
     name: "Dr. Salma",
-    specialty: "General Medicine",
+    specialty: "Family Medicine",
     bio: "Family care and everyday health checkups.",
     color: "bg-peach",
     initials: "SA",

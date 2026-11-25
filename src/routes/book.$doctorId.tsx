@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Baby, CalendarIcon, Check, Clock, HeartPulse, ScanFace, Stethoscope, type LucideIcon } from "lucide-react";
+import { ArrowLeft, CalendarIcon, Check, Clock, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -24,6 +24,7 @@ import {
   refreshDoctorBookings,
 } from "@/lib/clinic-storage";
 import { isReceptionStaff } from "@/lib/reception-api";
+import { getSpecialty, specialtySlug } from "@/lib/specialties";
 
 export const Route = createFileRoute("/book/$doctorId")({
   head: () => ({
@@ -135,7 +136,8 @@ function BookPage() {
       <AppHeader />
       <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-8">
         <Link
-          to="/doctors"
+          to="/doctors/$specialty"
+          params={{ specialty: specialtySlug(doctor.specialty) ?? "family-medicine" }}
           className="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -148,13 +150,7 @@ function BookPage() {
             className={`flex h-14 w-14 items-center justify-center rounded-2xl text-primary-foreground ${doctor.color}`}
           >
             {(() => {
-              const icons: Record<string, LucideIcon> = {
-                "General Medicine": Stethoscope,
-                Dermatology: ScanFace,
-                Pediatrics: Baby,
-                Cardiology: HeartPulse,
-              };
-              const Icon = icons[doctor.specialty] ?? Stethoscope;
+              const Icon = getSpecialty(specialtySlug(doctor.specialty) ?? "")?.icon ?? Stethoscope;
               return <Icon className="h-7 w-7" aria-hidden="true" />;
             })()}
           </div>
