@@ -136,9 +136,10 @@ function BookPage() {
       <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-8">
         <Link
           to="/doctors"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          className="group mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="h-4 w-4" /> Choose a different doctor
+          <ArrowLeft className="h-4 w-4" />
+          <span className="underline-offset-4 group-hover:underline">Choose a different doctor</span>
         </Link>
 
         {/* Doctor header */}
