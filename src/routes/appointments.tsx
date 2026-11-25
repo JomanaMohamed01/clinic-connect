@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import {
   type Appointment,
   cancelAppointment,
@@ -81,7 +82,7 @@ function AppointmentsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <AppHeader />
       {cancelling && (
         <div
@@ -93,7 +94,7 @@ function AppointmentsPage() {
           <p className="text-sm text-muted-foreground">Deleting appointment...</p>
         </div>
       )}
-      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-5 sm:py-10">
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:px-5 sm:py-10">
         <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="font-display text-3xl sm:text-4xl">My appointments</h1>
@@ -192,6 +193,7 @@ function AppointmentsPage() {
           </ul>
         )}
       </main>
+      <SiteFooter />
 
       <AlertDialog open={!!pending} onOpenChange={(o) => !o && setPending(null)}>
         <AlertDialogContent className="rounded-3xl">

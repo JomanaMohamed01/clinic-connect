@@ -1,6 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Baby, ChevronRight, HeartPulse, ScanFace, Stethoscope, type LucideIcon } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import { DOCTORS, ensureAuthReady, getSession } from "@/lib/clinic-storage";
 import { isReceptionStaff } from "@/lib/reception-api";
 
@@ -34,9 +35,9 @@ const specialtyIcons: Record<string, LucideIcon> = {
 
 function DoctorsPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <AppHeader />
-      <main className="mx-auto max-w-3xl px-5 py-10">
+      <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-10">
         <div className="mb-8">
           <h1 className="font-display text-4xl">Choose your doctor</h1>
           <p className="mt-2 text-muted-foreground">
@@ -72,6 +73,7 @@ function DoctorsPage() {
           })}
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { format, parseISO } from "date-fns";
 import { Clock, History, User } from "lucide-react";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import {
   type Appointment,
   ensureAuthReady,
@@ -50,9 +51,9 @@ function PastVisitsPage() {
     .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <AppHeader />
-      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-5 sm:py-10">
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:px-5 sm:py-10">
         <div className="mb-6 sm:mb-8">
           <h1 className="font-display text-3xl sm:text-4xl">Past visits</h1>
         </div>
@@ -117,6 +118,7 @@ function PastVisitsPage() {
           </ul>
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }

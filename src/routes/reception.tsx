@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReceptionReserveDialog } from "@/components/ReceptionReserveDialog";
+import { SiteFooter } from "@/components/SiteFooter";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -119,7 +120,7 @@ function ReceptionPage() {
   const isToday = isSameDay(selectedDate, new Date());
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-20 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
           <div className="flex items-center gap-2">
@@ -138,7 +139,7 @@ function ReceptionPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-5 py-8">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-8">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-display text-4xl">
@@ -242,6 +243,7 @@ function ReceptionPage() {
           </ul>
         )}
       </main>
+      <SiteFooter />
 
       <ReceptionReserveDialog
         open={reserveOpen}

@@ -1,6 +1,7 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Eye, EyeOff, Heart, Stethoscope } from "lucide-react";
+import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -227,11 +228,11 @@ function AuthPage() {
     "border-destructive focus-visible:border-destructive focus-visible:ring-destructive";
 
   return (
-    <div className="bg-warm-gradient relative min-h-screen overflow-hidden">
+    <div className="bg-warm-gradient relative flex min-h-screen flex-col overflow-hidden">
       <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-primary/25 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-secondary/40 blur-3xl" />
 
-      <div className="relative mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-6 py-12">
+      <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center px-6 py-12">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-peach-gradient shadow-soft">
             <Stethoscope className="h-8 w-8 text-primary-foreground" />
@@ -383,6 +384,7 @@ function AuthPage() {
           </Tabs>
         </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { formatSlotLabel } from "@/lib/format-time";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import {
   addAppointment,
   ensureAuthReady,
@@ -128,9 +129,9 @@ function BookPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <AppHeader />
-      <main className="mx-auto max-w-3xl px-5 py-8">
+      <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-8">
         <Link
           to="/doctors"
           className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -338,6 +339,7 @@ function BookPage() {
           </Button>
         </form>
       </main>
+      <SiteFooter />
     </div>
   );
 }
