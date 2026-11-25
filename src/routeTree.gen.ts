@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppointmentsRouteImport } from './routes/appointments'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DoctorsRouteImport } from './routes/doctors'
+import { Route as PastVisitsRouteImport } from './routes/past-visits'
 import { Route as ReceptionRouteImport } from './routes/reception'
 import { Route as BookDoctorIdRouteImport } from './routes/book.$doctorId'
 
@@ -36,6 +37,11 @@ const DoctorsRoute = DoctorsRouteImport.update({
   path: '/doctors',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PastVisitsRoute = PastVisitsRouteImport.update({
+  id: '/past-visits',
+  path: '/past-visits',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReceptionRoute = ReceptionRouteImport.update({
   id: '/reception',
   path: '/reception',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/appointments': typeof AppointmentsRoute
   '/auth': typeof AuthRoute
   '/doctors': typeof DoctorsRoute
+  '/past-visits': typeof PastVisitsRoute
   '/reception': typeof ReceptionRoute
   '/book/$doctorId': typeof BookDoctorIdRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/appointments': typeof AppointmentsRoute
   '/auth': typeof AuthRoute
   '/doctors': typeof DoctorsRoute
+  '/past-visits': typeof PastVisitsRoute
   '/reception': typeof ReceptionRoute
   '/book/$doctorId': typeof BookDoctorIdRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/appointments': typeof AppointmentsRoute
   '/auth': typeof AuthRoute
   '/doctors': typeof DoctorsRoute
+  '/past-visits': typeof PastVisitsRoute
   '/reception': typeof ReceptionRoute
   '/book/$doctorId': typeof BookDoctorIdRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/appointments'
     | '/auth'
     | '/doctors'
+    | '/past-visits'
     | '/reception'
     | '/book/$doctorId'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/appointments'
     | '/auth'
     | '/doctors'
+    | '/past-visits'
     | '/reception'
     | '/book/$doctorId'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/appointments'
     | '/auth'
     | '/doctors'
+    | '/past-visits'
     | '/reception'
     | '/book/$doctorId'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   AppointmentsRoute: typeof AppointmentsRoute
   AuthRoute: typeof AuthRoute
   DoctorsRoute: typeof DoctorsRoute
+  PastVisitsRoute: typeof PastVisitsRoute
   ReceptionRoute: typeof ReceptionRoute
   BookDoctorIdRoute: typeof BookDoctorIdRoute
 }
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DoctorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/past-visits': {
+      id: '/past-visits'
+      path: '/past-visits'
+      fullPath: '/past-visits'
+      preLoaderRoute: typeof PastVisitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reception': {
       id: '/reception'
       path: '/reception'
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppointmentsRoute: AppointmentsRoute,
   AuthRoute: AuthRoute,
   DoctorsRoute: DoctorsRoute,
+  PastVisitsRoute: PastVisitsRoute,
   ReceptionRoute: ReceptionRoute,
   BookDoctorIdRoute: BookDoctorIdRoute,
 }

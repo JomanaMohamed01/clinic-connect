@@ -16,3 +16,13 @@ export function formatSlotLabel(time: string): string {
   slot.setHours(hours, minutes, 0, 0);
   return formatTime12h(slot);
 }
+
+const VISIT_MINUTES = 15;
+
+/** A visit is past once its 15-minute slot has ended. */
+export function isPastVisit(dateKey: string, time: string, now = new Date()): boolean {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  const [hours, minutes] = time.split(":").map(Number);
+  const start = new Date(year, month - 1, day, hours, minutes, 0, 0);
+  return start.getTime() + VISIT_MINUTES * 60 * 1000 <= now.getTime();
+}

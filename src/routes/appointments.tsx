@@ -23,7 +23,7 @@ import {
   getSession,
 } from "@/lib/clinic-storage";
 import { isReceptionStaff } from "@/lib/reception-api";
-import { formatSlotLabel } from "@/lib/format-time";
+import { formatSlotLabel, isPastVisit } from "@/lib/format-time";
 
 export const Route = createFileRoute("/appointments")({
   head: () => ({
@@ -60,9 +60,9 @@ function AppointmentsPage() {
       .catch((err) => toast.error(err instanceof Error ? err.message : "Failed to load appointments"));
   }, [session?.email]);
 
-  const sorted = [...items].sort((a, b) =>
-    (a.date + a.time).localeCompare(b.date + b.time),
-  );
+  const sorted = items
+    .filter((a) => !isPastVisit(a.date, a.time))
+    .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
 
   const confirmCancel = async () => {
     if (!pending || cancelling) return;

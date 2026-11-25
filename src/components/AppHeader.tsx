@@ -101,6 +101,7 @@ export function AppHeader() {
 
   const homeActive = pathname === "/doctors" || pathname.startsWith("/book");
   const visitsActive = pathname === "/appointments";
+  const pastActive = pathname === "/past-visits";
   const itemClass =
     "inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground";
 
@@ -131,6 +132,12 @@ export function AppHeader() {
             className={cn(itemClass, visitsActive && "bg-accent text-foreground")}
           >
             My visits
+          </Link>
+          <Link
+            to="/past-visits"
+            className={cn(itemClass, pastActive && "bg-accent text-foreground")}
+          >
+            Past visits
           </Link>
           <button type="button" className={itemClass} onClick={() => setConfirmSignOut(true)}>
             Sign out
@@ -204,6 +211,16 @@ export function AppHeader() {
               }}
             >
               My visits
+            </button>
+            <button
+              type="button"
+              className="w-full border-b border-[rgba(255,248,244,0.22)] py-5 text-left font-sans text-[22px] font-semibold text-[#FFF8F4]"
+              onClick={() => {
+                setMenuOpen(false);
+                navigate({ to: "/past-visits" });
+              }}
+            >
+              Past visits
             </button>
             <button
               type="button"
